@@ -2,14 +2,12 @@
 
 import os
 
-from pydantic_settings import BaseSettings
 
+class Settings:
+    """Application settings.
 
-class Settings(BaseSettings):
-    """Application settings with defaults for local development.
-
-    Railway provides DATABASE_URL automatically when you add a PostgreSQL plugin.
-    CORS_ORIGINS should include your frontend URL (Railway gives you a public URL).
+    Reads directly from os.environ to ensure Railway's environment
+    variables are always picked up correctly.
     """
 
     APP_NAME: str = "Childsplay Accounting"
@@ -17,7 +15,7 @@ class Settings(BaseSettings):
         "DATABASE_URL",
         "postgresql://postgres:postgres@localhost:5432/childsplay",
     )
-    CORS_ORIGINS: list[str] = ["*"]
+    CORS_ORIGINS: list = ["*"]
 
     @property
     def database_url_safe(self) -> str:
@@ -30,10 +28,6 @@ class Settings(BaseSettings):
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql://", 1)
         return url
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 
 settings = Settings()
