@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure all text fields are selectable/copyable */
+input,
+textarea,
+select,
+[data-copyable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Clean administrative font */
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
