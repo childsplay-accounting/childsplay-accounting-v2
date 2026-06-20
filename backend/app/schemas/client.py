@@ -162,7 +162,7 @@ class ClientDateResponse(ClientDateBase):
 class ClientConnectedPersonBase(BaseModel):
     connected_client_id: UUID | None = None
     contact_person_id: UUID | None = None
-    relationship: ConnectedPersonRelationship
+    relationship_type: ConnectedPersonRelationship
 
 
 class ClientConnectedPersonCreate(ClientConnectedPersonBase):

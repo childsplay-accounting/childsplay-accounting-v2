@@ -67,7 +67,7 @@ class Client(Base):
     connected_persons = relationship(
         "ClientConnectedPerson",
         back_populates="client",
-        foreign_keys="ClientConnectedPerson.client_id",
+        foreign_keys="[ClientConnectedPerson.client_id]",
         cascade="all, delete-orphan",
     )
     personal_details = relationship(

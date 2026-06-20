@@ -3,7 +3,7 @@
 import uuid
 
 from sqlalchemy import ForeignKey, Enum, CheckConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship as sa_relationship
 
 from app.database import Base
 from app.models.enums import ConnectedPersonRelationship
@@ -27,13 +27,20 @@ class ClientConnectedPerson(Base):
     contact_person_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("contact_persons.id"), nullable=True
     )
-    relationship: Mapped[ConnectedPersonRelationship] = mapped_column(
-        Enum(ConnectedPersonRelationship, native_enum=False, length=50), nullable=False
+    relationship_type: Mapped[ConnectedPersonRelationship] = mapped_column(
+        "relationship",
+        Enum(ConnectedPersonRelationship, native_enum=False, length=50),
+        nullable=False,
     )
 
-    # Relationships
-    client = relationship(
-        "Client", back_populates="connected_persons", foreign_keys=[client_id]
+    # ORM relationships
+    client = sa_relationship(
+        "Client",
+        back_populates="connected_persons",
+        foreign_keys="[ClientConnectedPerson.client_id]",
     )
-    connected_client = relationship("Client", foreign_keys=[connected_client_id])
-    contact_person = relationship("ContactPerson")
+    connected_client = sa_relationship(
+        "Client",
+        foreign_keys="[ClientConnectedPerson.connected_client_id]",
+    )
+    contact_person = sa_relationship("ContactPerson")
