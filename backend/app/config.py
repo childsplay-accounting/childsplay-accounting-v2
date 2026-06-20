@@ -1,5 +1,7 @@
 """Application configuration loaded from environment variables."""
 
+import os
+
 from pydantic_settings import BaseSettings
 
 
@@ -11,8 +13,11 @@ class Settings(BaseSettings):
     """
 
     APP_NAME: str = "Childsplay Accounting"
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/childsplay"
-    CORS_ORIGINS: list[str] = ["http://localhost:5173"]
+    DATABASE_URL: str = os.environ.get(
+        "DATABASE_URL",
+        "postgresql://postgres:postgres@localhost:5432/childsplay",
+    )
+    CORS_ORIGINS: list[str] = ["*"]
 
     @property
     def database_url_safe(self) -> str:
@@ -28,6 +33,11 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 settings = Settings()
+
+# Print database connection info on startup (host only, no password)
+_safe_display = settings.database_url_safe.split("@")[-1] if "@" in settings.database_url_safe else "localhost"
+print(f"[CONFIG] Connecting to database at: {_safe_display}")
