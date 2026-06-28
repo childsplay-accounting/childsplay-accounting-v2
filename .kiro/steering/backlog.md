@@ -10,13 +10,20 @@
 
 ## Immediate Next Steps
 
-### 1. Deploy the Frontend
+### 1. Workpage GUI (IN PROGRESS)
+- Replacing sidebar layout with three-area workpage layout
+- Top horizontal drop-down menu bar (full width)
+- Open workpage area (fills remaining space)
+- Bottom status bar (full width)
+- See `.kiro/steering/workpage-gui.md` for full specification
+
+### 2. Deploy the Frontend
 - The React + Tailwind frontend is scaffolded in `/frontend/`
 - Needs to be deployed as a separate service (Railway, Vercel, or Netlify)
 - Must connect to the live backend API
 - Staff can start using the app once the frontend is live
 
-### 2. Complete the Client Form UI
+### 3. Complete the Client Form UI
 - Currently only core fields are in the form (client code, entity type, file status, ID)
 - Needs full sections for:
   - Names (multiple, with title, surname capitalization logic)
@@ -29,7 +36,7 @@
   - Connected persons (link to other clients or third-party contacts)
   - Personal details (marital status, domain)
 
-### 3. Railway Housekeeping
+### 4. Railway Housekeeping
 - Revert DATABASE_URL to reference format: `${{Postgres.DATABASE_URL}}`
   (Remember: click the "Changes" badge on the canvas to deploy after changing)
 - Regenerate the PostgreSQL password (it was exposed in chat)
@@ -38,6 +45,19 @@
 ---
 
 ## Future Modules (Not Yet Started)
+
+### Link Status Bar to Active Details
+- Connect all status bar placeholder values to real data:
+  - Application version from package.json
+  - Current module name from active route/module
+  - Current client code from selected client
+  - Logged-in user name from auth session
+  - Current firm name from firm context
+  - Date/time live updates
+  - Copyright with current year
+  - Online connection status (real network check)
+  - Screen reference code from route/component metadata
+  - Popup notifications from notification system
 
 ### Tax Administrative Register
 - Tracks tax compliance deadlines, submissions, and statuses per client
