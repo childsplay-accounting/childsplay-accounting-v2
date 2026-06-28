@@ -34,6 +34,7 @@ import { useState, useEffect } from "react";
  * All items use the same text colour (baby-300) including "Childsplay Accounting".
  *
  * REMINDER: Link these to real active details in a future session.
+ * Last updated: 2026-06-28
  */
 
 function StatusBar() {
