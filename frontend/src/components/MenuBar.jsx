@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Top horizontal drop-down menu bar — full width.
@@ -22,9 +23,9 @@ const menuConfig = [
     blocks: [
       {
         items: [
-          { label: "Add New Client", action: null },
-          { label: "Edit Existing Client", action: null },
-          { label: "Remove Terminated Client", action: null },
+          { label: "Add New Client", action: "navigate", path: "/clients/new" },
+          { label: "Edit Existing Client", action: "navigate", path: "/clients/edit" },
+          { label: "Remove Terminated Client", action: "navigate", path: "/clients/remove" },
         ],
       },
     ],
@@ -60,6 +61,7 @@ const menuConfig = [
 function MenuBar() {
   const [openMenu, setOpenMenu] = useState(null);
   const menuBarRef = useRef(null);
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -77,8 +79,10 @@ function MenuBar() {
     setOpenMenu(openMenu === index ? null : index);
   }
 
-  function handleItemClick(action) {
-    // Future: execute the action (navigate, open modal, etc.)
+  function handleItemClick(item) {
+    if (item.action === "navigate" && item.path) {
+      navigate(item.path);
+    }
     setOpenMenu(null);
   }
 
@@ -118,7 +122,7 @@ function MenuBar() {
                     {block.items.map((item) => (
                       <button
                         key={item.label}
-                        onClick={() => handleItemClick(item.action)}
+                        onClick={() => handleItemClick(item)}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-baby-50 hover:text-baby-800 transition-colors"
                       >
                         {item.label}
