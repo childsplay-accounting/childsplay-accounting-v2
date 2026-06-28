@@ -4,20 +4,35 @@ import { useState, useEffect } from "react";
  * Bottom horizontal status bar — full width.
  *
  * Items (left to right):
- * 1. "Childsplay Accounting" (application name)
- * 2. Application version
- * 3. Current module name
- * 4. Current client code
- * 5. Logged-in user name
- * 6. Current firm name
- * 7. Current date
- * 8. Current time
- * 9. Copyright
- * 10. Online connection status
- * 11. Screen reference code
- * 12. Popup notifications (bell icon with counter)
+ * 1. "Childsplay Accounting" (application name) — ALWAYS VISIBLE
+ * 2. Application version — priority 2 (hidden on narrow screens)
+ * 3. Current module name — priority 9 (last to hide)
+ * 4. Current client code — priority 8
+ * 5. Logged-in user name — priority 7
+ * 6. Current firm name — priority 6
+ * 7. Current date — priority 4
+ * 8. Current time — priority 5
+ * 9. Copyright — ALWAYS VISIBLE
+ * 10. Online connection status — priority 3
+ * 11. Screen reference code — priority 1 (first to hide)
+ * 12. Popup notifications (bell icon with counter) — ALWAYS VISIBLE
  *
- * All items currently display static placeholder values.
+ * Responsive priority (first to hide → last to hide):
+ * 1. Screen reference code
+ * 2. Application version
+ * 3. Online connection status
+ * 4. Current date
+ * 5. Current time
+ * 6. Current firm name
+ * 7. Logged-in user name
+ * 8. Current client code
+ * 9. Current module name
+ *
+ * Always visible: "Childsplay Accounting", Copyright, Popup notifications
+ *
+ * None of the items are clickable except the Notification Bell.
+ * All items use the same text colour (baby-300) including "Childsplay Accounting".
+ *
  * REMINDER: Link these to real active details in a future session.
  */
 
@@ -47,38 +62,78 @@ function StatusBar() {
 
   return (
     <footer className="w-full bg-baby-800 border-t border-baby-700 select-none">
-      <div className="flex items-center justify-between h-7 px-3 text-xs">
+      <div className="flex items-center justify-between h-6 px-2 text-[10px]">
         {/* Left group */}
-        <div className="flex items-center gap-4">
-          <span className="text-baby-100 font-medium">
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Always visible: Application name */}
+          <span className="text-baby-300 whitespace-nowrap">
             Childsplay Accounting
           </span>
-          <Separator />
-          <span className="text-baby-300">v0.1.0</span>
-          <Separator />
-          <span className="text-baby-300">Client Information</span>
-          <Separator />
-          <span className="text-baby-300">—</span>
-          <Separator />
-          <span className="text-baby-300">User</span>
-          <Separator />
-          <span className="text-baby-300">Childsplay Accounting</span>
+
+          {/* Priority 2: Application version — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline text-baby-300 whitespace-nowrap">
+            v0.1.0
+          </span>
+
+          {/* Priority 9: Current module name — hidden below sm */}
+          <Separator className="hidden sm:inline" />
+          <span className="hidden sm:inline text-baby-300 whitespace-nowrap">
+            Client Information
+          </span>
+
+          {/* Priority 8: Current client code — hidden below md */}
+          <Separator className="hidden md:inline" />
+          <span className="hidden md:inline text-baby-300 whitespace-nowrap">
+            Client Code
+          </span>
+
+          {/* Priority 7: Logged-in user name — hidden below md */}
+          <Separator className="hidden md:inline" />
+          <span className="hidden md:inline text-baby-300 whitespace-nowrap">
+            User
+          </span>
+
+          {/* Priority 6: Current firm name — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline text-baby-300 whitespace-nowrap">
+            Sun Jomar Accountants
+          </span>
         </div>
 
         {/* Right group */}
-        <div className="flex items-center gap-4">
-          <span className="text-baby-300">{formattedDate}</span>
-          <Separator />
-          <span className="text-baby-300">{formattedTime}</span>
-          <Separator />
-          <span className="text-baby-400 text-[10px]">
-            © Childsplay Accounting
+        <div className="flex items-center gap-2 min-w-0">
+          {/* Priority 4: Current date — hidden below lg */}
+          <span className="hidden lg:inline text-baby-300 whitespace-nowrap">
+            {formattedDate}
+          </span>
+          <Separator className="hidden lg:inline" />
+
+          {/* Priority 5: Current time — hidden below lg */}
+          <span className="hidden lg:inline text-baby-300 whitespace-nowrap">
+            {formattedTime}
+          </span>
+          <Separator className="hidden lg:inline" />
+
+          {/* Always visible: Copyright */}
+          <span className="text-baby-300 whitespace-nowrap">
+            © Comparative Shopping CC 2026 All Rights Reserved
           </span>
           <Separator />
-          <ConnectionStatus online={true} />
-          <Separator />
-          <span className="text-baby-400">Screen reference code</span>
-          <Separator />
+
+          {/* Priority 3: Online connection status — hidden below lg */}
+          <span className="hidden lg:inline">
+            <ConnectionStatus online={true} />
+          </span>
+          <Separator className="hidden lg:inline" />
+
+          {/* Priority 1: Screen reference code — hidden below xl */}
+          <span className="hidden xl:inline text-baby-300 whitespace-nowrap">
+            Screen reference code
+          </span>
+          <Separator className="hidden xl:inline" />
+
+          {/* Always visible: Notification bell */}
           <NotificationBell count={0} />
         </div>
       </div>
@@ -88,41 +143,45 @@ function StatusBar() {
 
 /**
  * Visual separator between status bar items.
+ * Accepts className for responsive visibility control.
  */
-function Separator() {
-  return <span className="text-baby-600">|</span>;
+function Separator({ className = "" }) {
+  return <span className={`text-baby-600 ${className}`}>|</span>;
 }
 
 /**
- * Online connection status indicator.
+ * Online connection status indicator (non-clickable).
  */
 function ConnectionStatus({ online }) {
   return (
-    <div className="flex items-center gap-1">
+    <span className="inline-flex items-center gap-1">
       <span
-        className={`w-2 h-2 rounded-full ${
+        className={`w-1.5 h-1.5 rounded-full ${
           online ? "bg-accent-green" : "bg-red-400"
         }`}
       />
-      <span className={`text-baby-300`}>
+      <span className="text-baby-300">
         {online ? "Online" : "Offline"}
       </span>
-    </div>
+    </span>
   );
 }
 
 /**
- * Notification bell icon with counter badge.
+ * Notification bell icon with counter badge (clickable).
  */
 function NotificationBell({ count }) {
   return (
-    <div className="relative flex items-center">
+    <button
+      className="relative flex items-center hover:opacity-80 transition-opacity"
+      title="Notifications"
+    >
       {/* Bell icon (SVG) */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
-        className="w-4 h-4 text-baby-300"
+        className="w-3.5 h-3.5 text-baby-200"
       >
         <path
           fillRule="evenodd"
@@ -132,11 +191,11 @@ function NotificationBell({ count }) {
       </svg>
       {/* Counter badge */}
       {count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold rounded-full w-3.5 h-3.5 flex items-center justify-center">
+        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-bold rounded-full w-3 h-3 flex items-center justify-center">
           {count > 9 ? "9+" : count}
         </span>
       )}
-    </div>
+    </button>
   );
 }
 
