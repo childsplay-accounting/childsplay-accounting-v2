@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 /**
- * Bottom horizontal status bar — full width.
+ * Bottom horizontal status bar — full width, single continuous row.
  *
  * Items (left to right):
  * 1. "Childsplay Accounting" (application name) — ALWAYS VISIBLE
@@ -17,19 +17,7 @@ import { useState, useEffect } from "react";
  * 11. Screen reference code — priority 1 (first to hide)
  * 12. Popup notifications (bell icon with counter) — ALWAYS VISIBLE
  *
- * Responsive priority (first to hide → last to hide):
- * 1. Screen reference code
- * 2. Application version
- * 3. Online connection status
- * 4. Current date
- * 5. Current time
- * 6. Current firm name
- * 7. Logged-in user name
- * 8. Current client code
- * 9. Current module name
- *
- * Always visible: "Childsplay Accounting", Copyright, Popup notifications
- *
+ * All items flow in a single row with consistent spacing (no gaps, no spacers).
  * None of the items are clickable except the Notification Bell.
  * All items use the same text colour (baby-100) for readability.
  * Copyright year is derived dynamically from the current date.
@@ -65,60 +53,42 @@ function StatusBar() {
   const currentYear = currentTime.getFullYear();
 
   return (
-    <footer className="w-full bg-baby-800 border-t border-baby-700 select-none">
-      <div className="flex items-center h-6 px-2 text-[10px] gap-2">
+    <footer className="w-full bg-baby-800 border-t border-baby-700 select-none overflow-hidden">
+      <div className="flex items-center h-6 px-2 text-[10px] gap-2 whitespace-nowrap">
         {/* 1. Always visible: Application name */}
-        <span className="text-baby-100 whitespace-nowrap">
-          Childsplay Accounting
-        </span>
+        <span className="text-baby-100">Childsplay Accounting</span>
 
         {/* 2. Priority 2: Application version — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
-          v0.1.0
-        </span>
+        <span className="hidden lg:inline text-baby-100">v0.1.0</span>
 
         {/* 3. Priority 9: Current module name — hidden below sm */}
         <Separator className="hidden sm:inline" />
-        <span className="hidden sm:inline text-baby-100 whitespace-nowrap">
-          Client Information
-        </span>
+        <span className="hidden sm:inline text-baby-100">Client Information</span>
 
         {/* 4. Priority 8: Current client code — hidden below md */}
         <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-100 whitespace-nowrap">
-          Client Code
-        </span>
+        <span className="hidden md:inline text-baby-100">Client Code</span>
 
         {/* 5. Priority 7: Logged-in user name — hidden below md */}
         <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-100 whitespace-nowrap">
-          User
-        </span>
+        <span className="hidden md:inline text-baby-100">User</span>
 
         {/* 6. Priority 6: Current firm name — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
-          Sun Jomar Accountants
-        </span>
+        <span className="hidden lg:inline text-baby-100">Sun Jomar Accountants</span>
 
         {/* 7. Priority 4: Current date — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
-          {formattedDate}
-        </span>
+        <span className="hidden lg:inline text-baby-100">{formattedDate}</span>
 
         {/* 8. Priority 5: Current time — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
-          {formattedTime}
-        </span>
-
-        {/* Spacer — pushes remaining items to the right */}
+        <span className="hidden lg:inline text-baby-100">{formattedTime}</span>
 
         {/* 9. Always visible: Copyright (year derived from current date) */}
-        <Separator className="ml-auto" />
-        <span className="text-baby-100 whitespace-nowrap">
+        <Separator />
+        <span className="text-baby-100">
           © Comparative Shopping CC {currentYear} All Rights Reserved
         </span>
 
@@ -130,9 +100,7 @@ function StatusBar() {
 
         {/* 11. Priority 1: Screen reference code — hidden below xl */}
         <Separator className="hidden xl:inline" />
-        <span className="hidden xl:inline text-baby-100 whitespace-nowrap">
-          Screen reference code
-        </span>
+        <span className="hidden xl:inline text-baby-100">Screen reference code</span>
 
         {/* 12. Always visible: Notification bell */}
         <Separator />
@@ -152,16 +120,17 @@ function Separator({ className = "" }) {
 
 /**
  * Online connection status indicator (non-clickable).
+ * Green (#22c55e) for Online, Red (#ef4444) for Offline.
  */
 function ConnectionStatus({ online }) {
   return (
     <span className="inline-flex items-center gap-1">
       <span
         className={`w-1.5 h-1.5 rounded-full ${
-          online ? "bg-accent-green" : "bg-red-400"
+          online ? "bg-green-500" : "bg-red-500"
         }`}
       />
-      <span className="text-baby-100">
+      <span className={online ? "text-green-400" : "text-red-400"}>
         {online ? "Online" : "Offline"}
       </span>
     </span>
