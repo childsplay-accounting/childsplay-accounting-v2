@@ -130,7 +130,7 @@ function ConnectionStatus({ online }) {
           online ? "bg-green-500" : "bg-red-500"
         }`}
       />
-      <span className={online ? "text-green-400" : "text-red-400"}>
+      <span className="text-baby-100">
         {online ? "Online" : "Offline"}
       </span>
     </span>
