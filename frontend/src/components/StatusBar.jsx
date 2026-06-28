@@ -114,11 +114,10 @@ function StatusBar() {
           {formattedTime}
         </span>
 
-        {/* Spacer to push remaining items to the right */}
-        <span className="flex-1" />
+        {/* Spacer — pushes remaining items to the right */}
 
         {/* 9. Always visible: Copyright (year derived from current date) */}
-        <Separator />
+        <Separator className="ml-auto" />
         <span className="text-baby-100 whitespace-nowrap">
           © Comparative Shopping CC {currentYear} All Rights Reserved
         </span>
@@ -148,7 +147,7 @@ function StatusBar() {
  * Accepts className for responsive visibility control.
  */
 function Separator({ className = "" }) {
-  return <span className={`text-baby-500 ${className}`}>|</span>;
+  return <span className={`text-baby-100 ${className}`}>|</span>;
 }
 
 /**
