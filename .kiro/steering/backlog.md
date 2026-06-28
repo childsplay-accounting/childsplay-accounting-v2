@@ -36,7 +36,13 @@
   - Connected persons (link to other clients or third-party contacts)
   - Personal details (marital status, domain)
 
-### 4. Railway Housekeeping
+### 4. Make GitHub Repository Private Again
+- The repo was made public temporarily to allow Vercel (Hobby plan) to deploy commits from Kiro Agent
+- Once you upgrade Vercel to Pro, or find an alternative deployment workflow, switch the repo back to private:
+  1. Go to github.com/childsplay-accounting/childsplay-accounting-v2 → Settings → Danger Zone → Change visibility → Private
+- This is a security/privacy best practice for production business applications
+
+### 5. Railway Housekeeping
 - Revert DATABASE_URL to reference format: `${{Postgres.DATABASE_URL}}`
   (Remember: click the "Changes" badge on the canvas to deploy after changing)
 - Regenerate the PostgreSQL password (it was exposed in chat)
