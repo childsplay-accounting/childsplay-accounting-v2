@@ -197,11 +197,15 @@ class ClientPersonalDetailsResponse(ClientPersonalDetailsBase):
 
 
 class ClientCreate(BaseModel):
-    """Schema for creating a new client."""
+    """Schema for creating a new client.
 
-    client_code: str
+    client_code is optional — if omitted, it will be auto-generated from
+    the primary client name using the 3-alpha + 4-numeric format.
+    """
+
+    client_code: str | None = None
     entity_type: EntityType
-    client_file_type: ClientFileType
+    client_file_type: ClientFileType = ClientFileType.NEW
     client_id_type: ClientIdType | None = None
     client_id_number: str | None = None
     client_group_id: UUID | None = None
