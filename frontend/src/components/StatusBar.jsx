@@ -31,7 +31,7 @@ import { useState, useEffect } from "react";
  * Always visible: "Childsplay Accounting", Copyright, Popup notifications
  *
  * None of the items are clickable except the Notification Bell.
- * All items use the same text colour (baby-200) for readability.
+ * All items use the same text colour (baby-100) for readability.
  * Copyright year is derived dynamically from the current date.
  *
  * REMINDER: Link these to real active details in a future session.
@@ -68,49 +68,49 @@ function StatusBar() {
     <footer className="w-full bg-baby-800 border-t border-baby-700 select-none">
       <div className="flex items-center h-6 px-2 text-[10px] gap-2">
         {/* 1. Always visible: Application name */}
-        <span className="text-baby-200 whitespace-nowrap">
+        <span className="text-baby-100 whitespace-nowrap">
           Childsplay Accounting
         </span>
 
         {/* 2. Priority 2: Application version — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
           v0.1.0
         </span>
 
         {/* 3. Priority 9: Current module name — hidden below sm */}
         <Separator className="hidden sm:inline" />
-        <span className="hidden sm:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden sm:inline text-baby-100 whitespace-nowrap">
           Client Information
         </span>
 
         {/* 4. Priority 8: Current client code — hidden below md */}
         <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden md:inline text-baby-100 whitespace-nowrap">
           Client Code
         </span>
 
         {/* 5. Priority 7: Logged-in user name — hidden below md */}
         <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden md:inline text-baby-100 whitespace-nowrap">
           User
         </span>
 
         {/* 6. Priority 6: Current firm name — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
           Sun Jomar Accountants
         </span>
 
         {/* 7. Priority 4: Current date — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
           {formattedDate}
         </span>
 
         {/* 8. Priority 5: Current time — hidden below lg */}
         <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden lg:inline text-baby-100 whitespace-nowrap">
           {formattedTime}
         </span>
 
@@ -118,7 +118,8 @@ function StatusBar() {
         <span className="flex-1" />
 
         {/* 9. Always visible: Copyright (year derived from current date) */}
-        <span className="text-baby-200 whitespace-nowrap">
+        <Separator />
+        <span className="text-baby-100 whitespace-nowrap">
           © Comparative Shopping CC {currentYear} All Rights Reserved
         </span>
 
@@ -130,7 +131,7 @@ function StatusBar() {
 
         {/* 11. Priority 1: Screen reference code — hidden below xl */}
         <Separator className="hidden xl:inline" />
-        <span className="hidden xl:inline text-baby-200 whitespace-nowrap">
+        <span className="hidden xl:inline text-baby-100 whitespace-nowrap">
           Screen reference code
         </span>
 
@@ -161,7 +162,7 @@ function ConnectionStatus({ online }) {
           online ? "bg-accent-green" : "bg-red-400"
         }`}
       />
-      <span className="text-baby-200">
+      <span className="text-baby-100">
         {online ? "Online" : "Offline"}
       </span>
     </span>
