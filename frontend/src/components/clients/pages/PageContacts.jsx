@@ -3,16 +3,14 @@ import DynamicFieldGroup from "../DynamicFieldGroup";
 import { ENUMS } from "../../../constants/enums";
 
 /**
- * Page 2: Segment ID & Contact Details
+ * Page 3: Segment Contact Details
  *
  * Sections:
- * - Client Name (name_value, name_type, individual_title, non_capitalization_surname)
- * - Addresses (dynamic, one per address_type for now)
+ * - Addresses (first entry shown by default, "Add another" for more, one per address_type for now)
  * - Phone Numbers (dynamic, one per phone_type for now)
  * - Third Party Contact Persons (dynamic)
  * - Email & Domain
  */
-
 
 // Templates for new dynamic items
 const ADDRESS_TEMPLATE = {
@@ -40,54 +38,10 @@ const CONTACT_PERSON_TEMPLATE = {
   association: "",
 };
 
-
 function PageContacts({ formData, onChange, onArrayItemChange, onArrayAdd, onArrayRemove, disabled }) {
   return (
     <div className="space-y-6">
-      {/* Client Name Section */}
-      <div>
-        <h3 className="text-lg font-semibold text-baby-800 mb-3">
-          Client Name
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TextField
-            label="Client Name"
-            name="name_value"
-            value={formData.names[0]?.name_value || ""}
-            onChange={(e) => onArrayItemChange("names", 0, "name_value", e.target.value)}
-            disabled={disabled}
-            required
-          />
-          <SelectField
-            label="Name Type"
-            name="name_type"
-            value={formData.names[0]?.name_type || ""}
-            onChange={(e) => onArrayItemChange("names", 0, "name_type", e.target.value)}
-            options={ENUMS.nameType}
-            disabled={disabled}
-          />
-          <SelectField
-            label="Individual Title"
-            name="individual_title"
-            value={formData.names[0]?.individual_title || ""}
-            onChange={(e) => onArrayItemChange("names", 0, "individual_title", e.target.value)}
-            options={ENUMS.individualTitle}
-            disabled={disabled}
-            placeholder="— None —"
-          />
-          <TextField
-            label="Non-Capitalization Surname"
-            name="non_capitalization_surname"
-            value={formData.names[0]?.non_capitalization_surname || ""}
-            onChange={(e) => onArrayItemChange("names", 0, "non_capitalization_surname", e.target.value)}
-            disabled={disabled}
-            placeholder="e.g. de, van der"
-          />
-        </div>
-      </div>
-
-
-      {/* Addresses Section */}
+      {/* Addresses Section — first entry always visible */}
       <DynamicFieldGroup
         label="Addresses"
         items={formData.addresses}
@@ -174,7 +128,6 @@ function PageContacts({ formData, onChange, onArrayItemChange, onArrayAdd, onArr
         )}
       />
 
-
       {/* Phone Numbers Section */}
       <DynamicFieldGroup
         label="Phone Numbers"
@@ -205,7 +158,6 @@ function PageContacts({ formData, onChange, onArrayItemChange, onArrayAdd, onArr
         )}
       />
 
-
       {/* Third Party Contact Persons */}
       <DynamicFieldGroup
         label="Third Party Contact Persons"
@@ -235,7 +187,6 @@ function PageContacts({ formData, onChange, onArrayItemChange, onArrayAdd, onArr
           </div>
         )}
       />
-
 
       {/* Email & Domain */}
       <div>

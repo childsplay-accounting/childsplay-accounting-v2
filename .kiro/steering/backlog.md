@@ -145,3 +145,23 @@
 - After pushing, always watch for Railway's "Changes" badge and deploy staged changes
 - Keep MVP deeply downscaled — no legacy data imports yet
 - Absolute data integrity — no duplication (Core Rule 1)
+- **Styling consistency:** All styling from Client Information module must be applied to ALL future modules
+- **Non-Capitalization Surname** is a BOOLEAN (Yes/No) field, not a text field
+
+---
+
+## REMINDERS (Check in Next Sessions)
+
+### Populate Third Party / Firm / Group Dropdowns
+The following dropdowns currently show empty and need API endpoints + frontend wiring:
+- Third Party Contact Person Code → list Third Party clients filtered by group + firm
+- Third Party Spouse Code → same filter
+- Third Party Connected Person Code → same filter
+- Client Group Code → list groups for the current firm
+- Firm Code → list available firms
+**Must be tested and verified.**
+
+### Client Code Gap-Filling
+- The auto-generation now fills gaps in the numeric sequence
+- When a client is permanently deleted after 10 years, the code becomes available for reuse
+- Verify this works correctly once permanent deletion housekeeping is implemented

@@ -8,7 +8,7 @@ import { ENUMS } from "../../../constants/enums";
  * All other fields are disabled until both gating fields are selected.
  *
  * Fields:
- * - Preferred Communication - Language (GATING)
+ * - Preferred Communication - Language (GATING, defaults to "English")
  * - Entity Type (GATING)
  * - Client Code (auto-generated, read-only)
  * - Client Group Code
@@ -16,7 +16,8 @@ import { ENUMS } from "../../../constants/enums";
  * - Client File Type
  * - Preferred Communication - Method
  * - Client Temporary Marker
- * - Segment Identification: Client ID Type, Client ID No
+ *
+ * NOTE: Client ID Type and Client ID No moved to Page 2 (Segment ID).
  */
 
 function PageStructural({ formData, onChange, disabled, isGateComplete, isEditing }) {
@@ -48,7 +49,6 @@ function PageStructural({ formData, onChange, disabled, isGateComplete, isEditin
           />
         </div>
       </div>
-
 
       {/* Structural Fields */}
       <div>
@@ -103,31 +103,6 @@ function PageStructural({ formData, onChange, disabled, isGateComplete, isEditin
             label="Client Temporary Marker"
             name="temporary_marker"
             checked={formData.temporary_marker}
-            onChange={onChange}
-            disabled={!isGateComplete}
-          />
-        </div>
-      </div>
-
-
-      {/* Segment Identification */}
-      <div>
-        <h3 className="text-lg font-semibold text-baby-800 mb-3">
-          Segment Identification
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SelectField
-            label="Client ID Type"
-            name="client_id_type"
-            value={formData.client_id_type}
-            onChange={onChange}
-            options={ENUMS.clientIdType}
-            disabled={!isGateComplete}
-          />
-          <TextField
-            label="Client ID No"
-            name="client_id_number"
-            value={formData.client_id_number}
             onChange={onChange}
             disabled={!isGateComplete}
           />

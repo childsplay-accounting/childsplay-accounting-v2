@@ -3,7 +3,9 @@ import DynamicFieldGroup from "../DynamicFieldGroup";
 import { ENUMS } from "../../../constants/enums";
 
 /**
- * Page 5: Segment Connected Persons
+ * Page 6: Segment Connected Persons
+ *
+ * Similar layout to Page 5 (Segment Marital Status).
  *
  * Sections:
  * - Connected Persons (dynamic — add another)
@@ -16,10 +18,19 @@ const CONNECTED_PERSON_TEMPLATE = {
   connected_person_code: "",
 };
 
-
 function PageConnected({ formData, onArrayItemChange, onArrayAdd, onArrayRemove, disabled }) {
   return (
     <div className="space-y-6">
+      {/* Section heading — similar style to PageMarital */}
+      <div>
+        <h3 className="text-lg font-semibold text-baby-800 mb-3">
+          Segment Connected Persons
+        </h3>
+        <p className="text-sm text-gray-500 mb-4">
+          Link this client to related persons (other clients or third-party contacts).
+        </p>
+      </div>
+
       <DynamicFieldGroup
         label="Connected Persons"
         items={formData.connected_persons}
@@ -53,7 +64,7 @@ function PageConnected({ formData, onArrayItemChange, onArrayAdd, onArrayRemove,
       {/* Future pages note */}
       <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
         <p className="text-sm text-gray-500 italic">
-          Pages 6 onwards will be added in future sessions as additional
+          Pages 7 onwards will be added in future sessions as additional
           segments are specified.
         </p>
       </div>

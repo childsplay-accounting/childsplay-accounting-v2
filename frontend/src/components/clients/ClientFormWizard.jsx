@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { clientsApi } from "../../services/api";
 import { PageTabs, PageButtons } from "./PageNavigation";
 import PageStructural from "./pages/PageStructural";
+import PageID from "./pages/PageID";
 import PageContacts from "./pages/PageContacts";
 import PageTaxes from "./pages/PageTaxes";
 import PageMarital from "./pages/PageMarital";
@@ -20,7 +21,7 @@ import PageConnected from "./pages/PageConnected";
 
 const INITIAL_FORM_DATA = {
   // Page 1: Structural
-  preferred_language: "",
+  preferred_language: "English",
   entity_type: "",
   client_code: "",
   client_group_id: "",
@@ -32,8 +33,8 @@ const INITIAL_FORM_DATA = {
   client_id_number: "",
 
   // Page 2: ID & Contact Details
-  names: [{ name_type: "", name_value: "", individual_title: "", non_capitalization_surname: "", is_primary: true }],
-  addresses: [],
+  names: [{ name_type: "", name_value: "", individual_title: "", non_capitalization_surname: false, is_primary: true }],
+  addresses: [{ address_type: "", complex_unit_number: "", complex_name: "", street_number: "", street_name: "", suburb: "", city: "", postal_code: "", province: "", country: "South Africa", is_primary: true }],
   phones: [],
   emails: [{ email_address: "", is_primary: true }],
   contact_persons: [],
@@ -41,7 +42,7 @@ const INITIAL_FORM_DATA = {
 
   // Page 3: Taxes & Income Sources
   tax_registrations: [],
-  income_sources: [],
+  income_sources: [{ trading_name: "", business_description: "", occupation_description: "" }],
 
   // Page 4: Marital & Dates
   marital_status: "",
@@ -199,12 +200,14 @@ function ClientFormWizard({ mode, clientId }) {
       case 0:
         return <PageStructural {...pageProps} isGateComplete={isGateComplete} />;
       case 1:
-        return <PageContacts {...pageProps} />;
+        return <PageID {...pageProps} />;
       case 2:
-        return <PageTaxes {...pageProps} />;
+        return <PageContacts {...pageProps} />;
       case 3:
-        return <PageMarital {...pageProps} />;
+        return <PageTaxes {...pageProps} />;
       case 4:
+        return <PageMarital {...pageProps} />;
+      case 5:
         return <PageConnected {...pageProps} />;
       default:
         return null;
@@ -274,7 +277,7 @@ function ClientFormWizard({ mode, clientId }) {
             {/* Page indicator + Save */}
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500">
-                Page {activePage + 1} of 5
+                Page {activePage + 1} of 6
               </span>
               <button
                 onClick={handleSave}
@@ -288,9 +291,9 @@ function ClientFormWizard({ mode, clientId }) {
             {/* Next */}
             <button
               onClick={() => setActivePage((p) => p + 1)}
-              disabled={activePage === 4 || !isGateComplete}
+              disabled={activePage === 5 || !isGateComplete}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors
-                ${activePage === 4 || !isGateComplete
+                ${activePage === 5 || !isGateComplete
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-baby-700 hover:bg-baby-50 border border-baby-300"}
               `}

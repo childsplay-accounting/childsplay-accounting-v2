@@ -8,12 +8,12 @@ Rules:
 - For individuals with non_capitalization_surname set: skip the prefix(es),
   use first 3 letters of the root surname
   (e.g., "de Kock" → KOC, "van der Merwe" → MER)
-- Numeric is sequential within the same 3-letter prefix per firm
+- Numeric fills GAPS in the sequence first, then appends at end
+  (e.g., if OLI0004 was deleted, next OLI client gets OLI0004, not OLI0007)
 """
 
 import re
 
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.client import Client
@@ -71,33 +71,47 @@ def generate_client_code(
     Generate a unique client code for the given firm.
 
     Format: ABC0001 (3 alpha + 4 numeric, zero-padded)
-    The numeric portion is sequential within the same alpha prefix per firm.
+
+    Gap-filling logic:
+    - Queries all existing codes with this prefix for the firm
+    - Finds the first gap in the numeric sequence (e.g., if 0004 was deleted)
+    - Fills the gap rather than always appending at the end
+    - If no gaps exist, uses the next number after the highest
     """
     prefix = extract_alpha_prefix(name_value, non_capitalization_surname)
 
-    # Find the highest existing numeric suffix for this prefix in the firm
-    # Client codes matching this prefix pattern: PREFIX followed by 4 digits
+    # Query ALL existing codes with this prefix for the firm
     pattern = f"{prefix}%"
-
-    # Query for the max numeric suffix
-    result = (
-        db.query(func.max(Client.client_code))
+    existing_codes = (
+        db.query(Client.client_code)
         .filter(
             Client.firm_id == firm_id,
             Client.client_code.like(pattern),
         )
-        .scalar()
+        .all()
     )
 
-    if result:
-        # Extract the numeric part (last 4 characters)
+    # Extract all used numeric suffixes
+    used_numbers = set()
+    for (code,) in existing_codes:
         try:
-            existing_num = int(result[-4:])
-            next_num = existing_num + 1
+            num = int(code[-4:])
+            used_numbers.add(num)
         except (ValueError, IndexError):
-            next_num = 1
-    else:
+            continue
+
+    # Find the first available number (gap-filling)
+    if not used_numbers:
         next_num = 1
+    else:
+        # Check for gaps starting from 1
+        max_num = max(used_numbers)
+        next_num = max_num + 1  # Default: append after highest
+
+        for candidate in range(1, max_num + 1):
+            if candidate not in used_numbers:
+                next_num = candidate
+                break
 
     # Format: PREFIX + 4-digit zero-padded number
     client_code = f"{prefix}{next_num:04d}"

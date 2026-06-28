@@ -3,14 +3,14 @@ import DynamicFieldGroup from "../DynamicFieldGroup";
 import { ENUMS } from "../../../constants/enums";
 
 /**
- * Page 3: Segment Taxes & Income Sources
+ * Page 4: Segment Taxes & Income Sources
  *
  * Sections:
  * - Tax Registrations (dynamic — add another)
  *   - Tax Type, Tax No, Tax Status
  *   - VAT Registration, VAT Period (only visible when Tax Type = VAT)
  *   - eFiling Client Code
- * - Income Sources (dynamic — add another)
+ * - Income Sources (first entry shown by default, "Add another" for more)
  *   - Associated Trading Name
  *   - Main Business Description
  *   - Occupation Description

@@ -10,6 +10,18 @@ These GUIs are presented as **windows within the workpage area** (the body of th
 
 ---
 
+## Styling Consistency Rule
+
+All styling implemented for the Client Information module (form layout, field components, colours, spacing, tab navigation, dynamic field groups, etc.) **must be applied consistently in all future modules** of Childsplay Accounting. This includes:
+- Form field components (TextField, SelectField, CheckboxField, DateField)
+- Page/tab navigation (wizard + tabs hybrid)
+- Dynamic "Add another" field groups
+- Window presentation within workpage area
+- Baby blue colour scheme with accents
+- Copy-paste friendly text selection on all fields
+
+---
+
 ## Navigation Style: Wizard + Tabs Hybrid
 
 The Client Information form uses a **combined multi-step wizard and tabbed interface**:
@@ -23,19 +35,19 @@ The Client Information form uses a **combined multi-step wizard and tabbed inter
 ## Prerequisite Fields (Gating Logic)
 
 On **Page 1**, the following two fields must be selected **first**, before any other fields on any page become enabled:
-1. **Preferred Communication - Language** (currently only "English")
+1. **Preferred Communication - Language** (defaults to "English")
 2. **Entity Type**
 
 Until both are selected, all remaining fields across all pages are **disabled/greyed out**. These two fields drive future validation logic (entity-type-specific required fields, conditional visibility, etc.).
 
 ---
 
-## Page Structure
+## Page Structure (6 Pages)
 
 ### Page 1: Segment Structural
 | Field | Type | Notes |
 |-------|------|-------|
-| Preferred Communication - Language | Dropdown | **GATING FIELD** — must be selected first |
+| Preferred Communication - Language | Dropdown | **GATING FIELD** — defaults to "English" |
 | Entity Type | Dropdown | **GATING FIELD** — must be selected first |
 | Client Code | Text (read-only) | Auto-generated. See Client Code Rules below |
 | Client Group Code | Dropdown | Groups belonging to the same Firm |
@@ -44,27 +56,23 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 | Preferred Communication - Method | Dropdown | Defaults to "Email" |
 | Client Temporary Marker | Checkbox | Default false |
 
-#### Segment Identification (sub-heading on Page 1)
+---
+
+### Page 2: Segment ID
 | Field | Type | Notes |
 |-------|------|-------|
 | Client ID Type | Dropdown | |
 | Client ID No | Text | |
+| Client Name | Text | Primary name value |
+| Name Type | Dropdown | |
+| Individual Title | Dropdown | **Only editable when Entity Type starts with "Individual"** |
+| Non-Capitalization Surname | Boolean (Yes/No) | **Only editable when Entity Type starts with "Individual" AND Name Type is "Surname"** |
 
 ---
 
-### Page 2: Segment ID & Contact Details
+### Page 3: Segment Contact Details
 
-#### Client Name Section
-| Field | Type | Notes |
-|-------|------|-------|
-| Client Name | Text | Primary name value |
-| Name Type | Dropdown | |
-| Individual Title | Dropdown | Nullable, visible for Individual entity types |
-| Non-Capitalization Surname | Text | Nullable, for surname prefixes (de, van der, etc.) |
-
-#### Segment Contact Details (sub-heading)
-
-##### Addresses (dynamic — "Add another", one per address_type for now)
+#### Addresses (first entry shown by default, "Add another" for more, one per address_type for now)
 | Field | Type | Notes |
 |-------|------|-------|
 | Address Type | Dropdown | |
@@ -78,19 +86,19 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 | Province | Dropdown | South African provinces |
 | Country | Text | Default "South Africa" |
 
-##### Phone Numbers (dynamic — "Add another", one per phone_type for now)
+#### Phone Numbers (dynamic — "Add another", one per phone_type for now)
 | Field | Type | Notes |
 |-------|------|-------|
 | Phone Type | Dropdown | |
 | Phone Number | Text | |
 
-##### Third Party Contact Person (dynamic — "Add another")
+#### Third Party Contact Person (dynamic — "Add another")
 | Field | Type | Notes |
 |-------|------|-------|
 | Third Party Contact Person Code | Dropdown | Filtered to same Client Group + Firm |
 | Third Party Contact Person Association | Dropdown | Connected person relationship enum |
 
-##### Email & Domain
+#### Email & Domain
 | Field | Type | Notes |
 |-------|------|-------|
 | E-mail Address | Text | |
@@ -98,7 +106,7 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 
 ---
 
-### Page 3: Segment Taxes & Income Sources
+### Page 4: Segment Taxes & Income Sources
 
 #### Tax Registrations (dynamic — "Add another")
 | Field | Type | Notes |
@@ -110,7 +118,7 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 | VAT Period | Dropdown | Only visible when Tax Type = VAT |
 | eFiling Client Code | Text | Nullable |
 
-#### Segment Income Sources (sub-heading, dynamic — "Add another")
+#### Segment Income Sources (first entry shown by default, "Add another" for more)
 | Field | Type | Notes |
 |-------|------|-------|
 | Associated Trading Name | Text | |
@@ -119,15 +127,17 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 
 ---
 
-### Page 4: Segment Marital Status & Dates
+### Page 5: Segment Marital Status & Dates
+
+**Visibility:** This entire page only applies when **Entity Type starts with "Individual"**. For non-individual entities, this page tab is disabled/hidden.
 
 #### Marital Status Section
 | Field | Type | Notes |
 |-------|------|-------|
 | Marital Status | Dropdown | |
-| Third Party Spouse Code | Dropdown | Filtered to same Client Group + Firm (Third Party clients) |
+| Third Party Spouse Code | Dropdown | **Only shown/required when Marital Status starts with "Married"**. Filtered to same Client Group + Firm |
 
-#### Segment Dates (sub-heading, dynamic — "Add another")
+#### Segment Dates (dynamic — "Add another")
 | Field | Type | Notes |
 |-------|------|-------|
 | Official Date Type | Dropdown | |
@@ -136,7 +146,9 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 
 ---
 
-### Page 5: Segment Connected Persons
+### Page 6: Segment Connected Persons
+
+**Layout:** Similar structure to Page 5 (Segment Marital Status).
 
 #### Connected Persons (dynamic — "Add another")
 | Field | Type | Notes |
@@ -146,7 +158,7 @@ Until both are selected, all remaining fields across all pages are **disabled/gr
 
 ---
 
-## Pages 6+ (Future — Not Yet Specified)
+## Pages 7+ (Future — Not Yet Specified)
 Additional pages will be added as the module expands. The tab interface supports unlimited pages.
 
 ---
@@ -158,7 +170,7 @@ The Client Code is **7 characters**: 3 alphabetic + 4 numeric.
 ### First 3 Letters (alphabetic)
 - Based on the **Client Name** field value
 - For **all entity types**: Use the first 3 letters of the name
-- For **individuals with Non-Capitalization Surname marked**: Skip the prefix(es), use the first 3 letters of the root surname
+- For **individuals with Non-Capitalization Surname = Yes**: Skip the prefix(es), use the first 3 letters of the root surname
   - Example: "de Kock" → KOC, "van der Merwe" → MER
 - **Exclude** all spaces and special characters from the name before extracting letters
   - Example: "B & C Enterprises (Pty) Ltd" → BCE
@@ -166,9 +178,10 @@ The Client Code is **7 characters**: 3 alphabetic + 4 numeric.
 - Letters are **UPPERCASE**
 
 ### Last 4 Digits (numeric)
-- Sequential number within the same 3-letter prefix
+- Sequential number within the same 3-letter prefix per firm
 - Zero-padded: 0001, 0002, 0003, etc.
-- Example sequence: BAR0001, BAR0002, BAR0003
+- **Gap-filling:** If a code is removed (e.g., after permanent deletion), the gap is filled by the next new client
+  - Example: OLI0001, OLI0002, OLI0003, OLI0005 → next OLI client gets OLI0004
 
 ### Display
 - Client Code is **read-only** in the form (auto-generated on save)
@@ -180,8 +193,8 @@ The Client Code is **7 characters**: 3 alphabetic + 4 numeric.
 
 ### 1. Add New Client
 - Accessed via: Clients → Add New Client
-- Opens a new (blank) 5-page form in the workpage area
-- Language and Entity Type must be selected first (gating)
+- Opens a new (blank) 6-page form in the workpage area
+- Language defaults to "English"; Entity Type must be selected (gating)
 - Client File Type defaults to "New"
 - Client Code auto-generated when Client Name is provided
 - User can save at any time (draft state while File Type = "New")
@@ -190,7 +203,7 @@ The Client Code is **7 characters**: 3 alphabetic + 4 numeric.
 ### 2. Edit Existing Client
 - Accessed via: Clients → Edit Existing Client
 - First shows a **client search/selection** interface
-- After selection, opens the same 5-page form pre-populated with existing data
+- After selection, opens the same 6-page form pre-populated with existing data
 - All fields are currently editable (future: some read-only based on access rights)
 - Save updates the existing record
 
@@ -224,10 +237,23 @@ Permanently Deleted (data removed from database)
 
 ---
 
+## Conditional Visibility Rules
+
+### Entity Type Conditionals
+- **Individual Title**: Only editable when Entity Type starts with "Individual"
+- **Non-Capitalization Surname**: Only editable when Entity Type starts with "Individual" AND Name Type is "Surname"
+- **Page 5 (Marital Status & Dates)**: Entire page only visible/applicable when Entity Type starts with "Individual"
+- **Spouse details**: Only required/shown when Marital Status starts with "Married"
+
+### VAT Conditionals
+- **VAT Registration** and **VAT Period**: Only visible when Tax Type = "Value Added Tax (VAT)"
+
+---
+
 ## Save Behaviour
 
 - **File Type = "New"**: User may save a partially-completed form (draft). No mandatory field validation beyond Language and Entity Type.
-- **File Type = "Active"**: All relevant required fields across all 5 pages must be completed before saving. Validation enforced.
+- **File Type = "Active"**: All relevant required fields across all 6 pages must be completed before saving. Validation enforced.
 - **File Type = "Third Party"**: Minimal required fields (to be defined later).
 - **File Type = "Archived"**: Read-only (no saves allowed except by supervisor to change status).
 
@@ -240,12 +266,21 @@ All "Third Party" code dropdowns (Contact Person, Spouse, Connected Person) are:
 - **Filtered** to clients belonging to the same `client_group_id` AND `firm_id` as the current client
 - Displayed as: `client_code - client_name`
 
+### REMINDER: Populate Third Party / Firm / Group Dropdowns
+The following dropdowns currently show empty options and need to be connected to the API:
+- Third Party Contact Person Code → needs API endpoint to list Third Party clients filtered by group + firm
+- Third Party Spouse Code → same filter
+- Third Party Connected Person Code → same filter
+- Client Group Code → needs API endpoint to list groups for the current firm
+- Firm Code → needs API endpoint to list firms
+**This must be tested and verified in an upcoming session.**
+
 ---
 
 ## Future Work (Not Yet Implemented)
 
 ### Visibility & Access Control
-- Hide/show pages and fields based on Entity Type
+- Hide/show pages and fields based on Entity Type (partially implemented: Individual Title, Non-Cap Surname, Page 5)
 - Read-only fields based on user role (standard user vs supervisor)
 - Supervisor-only access to view Archived clients
 - Supervisor-only ability to change File Type from "New" to "Active"
@@ -263,6 +298,7 @@ All "Third Party" code dropdowns (Contact Person, Spouse, Connected Person) are:
 - Supervisor approval required before permanent deletion
 - Deletion cascades to all related records (addresses, phones, taxes, etc.)
 - Future: configurable retention period per firm
+- Gap-filling: When a client code is permanently deleted, the number becomes available for reuse
 
 ### Additional Future Enhancements
 - Cascading dropdowns: Country → Province → City → Suburb
@@ -281,6 +317,7 @@ All "Third Party" code dropdowns (Contact Person, Spouse, Connected Person) are:
 - **Surname display logic:** Non-capitalization prefix lowercase after given names, capitalized when standalone
 - **Window presentation:** Forms open as windows within the workpage area
 - **Consistent layout:** All module forms follow the same visual structure
+- **Styling consistency:** All styling from this module applies to ALL future modules
 
 ---
 

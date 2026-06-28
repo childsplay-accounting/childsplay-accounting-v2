@@ -14,10 +14,11 @@
 
 const PAGE_LABELS = [
   "1. Structural",
-  "2. ID & Contacts",
-  "3. Taxes & Income",
-  "4. Marital & Dates",
-  "5. Connected Persons",
+  "2. Segment ID",
+  "3. Contacts",
+  "4. Taxes & Income",
+  "5. Marital & Dates",
+  "6. Connected Persons",
 ];
 
 /**
