@@ -43,6 +43,19 @@ export const clientsApi = {
    * @param {string} id - Client UUID
    */
   delete: (id) => api.delete(`/clients/${id}`),
+
+  /**
+   * Preview what client code would be auto-generated.
+   * @param {string} nameValue - The client name
+   * @param {string|null} nonCapSurname - Surname prefix to skip (optional)
+   */
+  previewCode: (nameValue, nonCapSurname = null) => {
+    const params = { name_value: nameValue };
+    if (nonCapSurname) {
+      params.non_capitalization_surname = nonCapSurname;
+    }
+    return api.post("/clients/preview-code", null, { params });
+  },
 };
 
 export default api;
