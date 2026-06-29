@@ -262,9 +262,10 @@ Each page displays a status warning area at the top showing:
 2. **Informational warnings** (subtle amber — bg-amber-50, text-amber-600): File type notices, etc.
 
 ### Always-visible warnings:
-- When Client File Type is "New": info that file is a draft
-- When Client File Type is "Third Party": info that file is a reference contact
-- When Client File Type is "Archived": info that file is disabled/hidden
+- When Client File Type is "New": amber info that file is a draft
+- When Client File Type is "Third Party": amber info that file is a reference contact
+- When Client File Type is "Archived": amber info that file is disabled/hidden
+- When Client File Type is "Active" (no errors): green success that file is live and operational
 
 ### Validation errors shown per page:
 - **Page 2**: Client ID Type mismatch with Entity Type or address country
@@ -282,7 +283,11 @@ Each page displays a status warning area at the top showing:
 - Digit 13: Check digit (Luhn algorithm)
 
 ### SARS Tax Reference Number (10 digits)
-- Digit 1: Tax type indicator (0 = Income Tax, 4 = VAT, 7 = PAYE)
+- Digit 1: Tax type indicator
+  - 0 = Income Tax (Individuals)
+  - 9 = Income Tax (Companies/Corporates/Trusts/non-individual entities)
+  - 4 = Value Added Tax (VAT) — all entity types
+  - 7 = Employees Tax (EMP/PAYE) — all entity types that are employers
 - Digits 2-9: Unique taxpayer identifier
 - Digit 10: Check digit (Luhn algorithm)
 

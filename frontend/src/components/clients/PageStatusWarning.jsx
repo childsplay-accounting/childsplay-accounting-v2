@@ -1,19 +1,21 @@
 /**
- * PageStatusWarning — displays validation errors and informational warnings
- * at the top of each page within the Client Information wizard.
+ * PageStatusWarning — displays validation errors, informational warnings,
+ * and success status at the top of each page within the Client Information wizard.
  *
  * Props:
- * - warnings: Array of { type: "error" | "info", message: string }
+ * - warnings: Array of { type: "error" | "info" | "success", message: string }
  *
  * Styling:
  * - Errors: red ink (bg-red-50, border-red-200, text-red-700)
- * - Informational warnings: subtle amber (bg-amber-50, border-amber-200, text-amber-700)
+ * - Informational warnings: subtle amber (bg-amber-50, border-amber-100, text-amber-600)
+ * - Success/Active: green (bg-green-50, border-green-100, text-green-700)
  */
 function PageStatusWarning({ warnings }) {
   if (!warnings || warnings.length === 0) return null;
 
   const errors = warnings.filter((w) => w.type === "error");
   const infos = warnings.filter((w) => w.type === "info");
+  const successes = warnings.filter((w) => w.type === "success");
 
   return (
     <div className="space-y-2 mb-4">
@@ -41,6 +43,22 @@ function PageStatusWarning({ warnings }) {
             <div className="space-y-1">
               {infos.map((warning, idx) => (
                 <p key={idx} className="text-sm text-amber-600">
+                  {warning.message}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success / Active — green */}
+      {successes.length > 0 && (
+        <div className="p-3 bg-green-50 border border-green-100 rounded-lg">
+          <div className="flex items-start gap-2">
+            <span className="text-green-500 text-sm mt-0.5">&#10003;</span>
+            <div className="space-y-1">
+              {successes.map((warning, idx) => (
+                <p key={idx} className="text-sm text-green-700">
                   {warning.message}
                 </p>
               ))}

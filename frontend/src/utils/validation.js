@@ -3,7 +3,7 @@
  *
  * Validations are "soft" / delayed — they don't block input but show
  * warnings on each page's status bar. Errors appear in red; informational
- * warnings in subtle amber.
+ * warnings in subtle amber; active status in green.
  */
 
 /**
@@ -49,7 +49,6 @@ export function validateSAIdNumber(idNumber) {
   }
 
   // Check date of birth (first 6 digits = YYMMDD)
-  const year = idNumber.substring(0, 2);
   const month = parseInt(idNumber.substring(2, 4), 10);
   const day = parseInt(idNumber.substring(4, 6), 10);
 
@@ -76,11 +75,21 @@ export function validateSAIdNumber(idNumber) {
 
 /**
  * Validate a SARS tax reference number (10 digits, Luhn check on last digit).
- * @param {string} taxNumber
- * @param {string} taxType - The type of tax (to check first digit)
+ *
+ * First digit indicates tax type:
+ * - 0 = Income Tax (Individuals)
+ * - 9 = Income Tax (Companies/Corporates/Trusts/other non-individual entities)
+ * - 4 = Value Added Tax (VAT) — all entity types
+ * - 7 = Employees Tax (EMP/PAYE) — all entity types that are employers
+ *
+ * The Luhn algorithm applies to ALL SARS tax reference numbers.
+ *
+ * @param {string} taxNumber - The 10-digit tax reference number
+ * @param {string} taxType - The type of tax (e.g., "Income Tax (IT)", "Value Added Tax (VAT)")
+ * @param {string} entityType - The entity type of the client (to determine individual vs corporate)
  * @returns {{ valid: boolean, errors: string[] }}
  */
-export function validateSATaxNumber(taxNumber, taxType) {
+export function validateSATaxNumber(taxNumber, taxType, entityType) {
   const errors = [];
 
   if (!taxNumber) return { valid: true, errors }; // Empty is OK
@@ -91,18 +100,32 @@ export function validateSATaxNumber(taxNumber, taxType) {
     return { valid: false, errors };
   }
 
-  // Check first digit matches tax type
+  // Check first digit matches tax type and entity type
   const firstDigit = taxNumber[0];
-  const expectedFirstDigits = {
-    "Income Tax (IT)": "0",
-    "Value Added Tax (VAT)": "4",
-    "Employees Tax (EMP)": "7",
-  };
+  const isIndividual = (entityType || "").startsWith("Individual");
 
-  if (expectedFirstDigits[taxType] && firstDigit !== expectedFirstDigits[taxType]) {
-    errors.push(
-      `Tax reference for ${taxType} should start with "${expectedFirstDigits[taxType]}" but starts with "${firstDigit}".`
-    );
+  if (taxType === "Income Tax (IT)") {
+    if (isIndividual && firstDigit !== "0") {
+      errors.push(
+        `Income Tax reference for individuals should start with "0" but starts with "${firstDigit}".`
+      );
+    } else if (!isIndividual && firstDigit !== "9") {
+      errors.push(
+        `Income Tax reference for corporate/non-individual entities should start with "9" but starts with "${firstDigit}".`
+      );
+    }
+  } else if (taxType === "Value Added Tax (VAT)") {
+    if (firstDigit !== "4") {
+      errors.push(
+        `VAT reference number should start with "4" but starts with "${firstDigit}".`
+      );
+    }
+  } else if (taxType === "Employees Tax (EMP)") {
+    if (firstDigit !== "7") {
+      errors.push(
+        `Employees Tax (PAYE) reference number should start with "7" but starts with "${firstDigit}".`
+      );
+    }
   }
 
   // Luhn check digit (last digit)
@@ -167,7 +190,12 @@ export function validateClientIdType(formData) {
  * Generate all page-level warnings and errors for the form.
  *
  * Returns an object keyed by page index (0-5) with arrays of
- * { type: "error" | "warning", message: string }
+ * { type: "error" | "info" | "success", message: string }
+ *
+ * Types:
+ * - "error": Red ink — validation errors that must be resolved
+ * - "info": Subtle amber — informational (New, Third Party, Archived file types)
+ * - "success": Green — active file type with no errors
  *
  * @param {Object} formData - The full form data
  * @returns {Object} - { 0: [...], 1: [...], ... }
@@ -175,7 +203,7 @@ export function validateClientIdType(formData) {
 export function getPageWarnings(formData) {
   const warnings = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [] };
 
-  // --- File Type warnings (all pages) ---
+  // --- File Type status (Page 1) ---
   const fileType = formData.client_file_type || "";
   if (fileType === "New") {
     warnings[0].push({
@@ -191,6 +219,11 @@ export function getPageWarnings(formData) {
     warnings[0].push({
       type: "info",
       message: 'Client File Type is "Archived" — this file is disabled and hidden from normal views.',
+    });
+  } else if (fileType === "Active") {
+    warnings[0].push({
+      type: "success",
+      message: 'Client File Type is "Active" — this client file is live and operational.',
     });
   }
 
@@ -212,10 +245,11 @@ export function getPageWarnings(formData) {
   }
 
   // --- Page 4: Tax number validation ---
+  const entityType = formData.entity_type || "";
   if (formData.tax_registrations) {
     for (const tax of formData.tax_registrations) {
       if (tax.tax_number && tax.tax_type) {
-        const { errors } = validateSATaxNumber(tax.tax_number, tax.tax_type);
+        const { errors } = validateSATaxNumber(tax.tax_number, tax.tax_type, entityType);
         for (const err of errors) {
           warnings[3].push({ type: "error", message: err });
         }
