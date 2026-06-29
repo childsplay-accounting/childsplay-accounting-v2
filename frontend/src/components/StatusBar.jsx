@@ -84,6 +84,7 @@ function StatusBar() {
         {/* Right-aligned group: items 7–12 */}
         <div className="flex items-center gap-2">
           {/* 7. Priority 4: Current date — hidden below lg */}
+          <Separator className="hidden lg:inline" />
           <span className="hidden lg:inline text-baby-100">{formattedDate}</span>
 
           {/* 8. Priority 5: Current time — hidden below lg */}
