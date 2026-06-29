@@ -374,3 +374,16 @@ Single-record master file for the Childsplay Accounting business itself. Only on
 - **Copy-paste friendly:** All field values must be selectable and copyable in both view and edit modes
 - **Surname display logic:** When `non_capitalization_surname` is set, display as lowercase prefix after given names (e.g., "Jan de Kock") but capitalize when standalone ("De Kock")
 - **Future:** Cascading dropdowns for Country → Province → City → Suburb
+
+
+
+---
+
+## Cross-Table Dependency: clients ↔ business_details (DB Master File)
+
+**IMPORTANT:** Structural changes to the `clients` table may require corresponding structural changes to the `business_details` table in the Childsplay Accounting DB Master File.
+
+This dependency was documented in a separate session. When modifying the `clients` schema:
+- Check whether equivalent fields exist in `business_details` that need updating
+- Ensure shared ENUMs remain synchronised between both tables
+- Verify that new columns, constraints, or relationships are reflected where appropriate

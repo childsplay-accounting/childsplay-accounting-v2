@@ -331,3 +331,20 @@ The Client Information module is the **core structural backbone** of the Childsp
 - Integration with other modules (Tax Register, Timesheets, Communications)
 
 Each refinement will be documented in this steering file as specifications are finalized.
+
+---
+
+## Cross-Table Dependency: clients ↔ business_details
+
+**IMPORTANT:** Structural changes to the Client Information database table (`clients`) may result in structural changes to the associated fields of the **Childsplay Accounting DB Master File** database structure (`business_details`).
+
+This relationship has been documented in a separate session (possibly in the `childsplay-accounting-v` repository). When modifying the `clients` table schema, always consider:
+- Whether equivalent fields exist in `business_details` that need updating
+- Whether new fields in `clients` should be reflected in the Master File
+- Whether validation rules or ENUMs shared between the two tables need synchronising
+
+This cross-table dependency must be checked whenever:
+- New columns are added to `clients`
+- Column types or constraints are changed on `clients`
+- ENUM values are added/modified
+- Relationships between `clients` and other tables change
