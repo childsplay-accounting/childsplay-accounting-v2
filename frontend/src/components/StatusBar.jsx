@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 /**
  * Bottom horizontal status bar — full width, single continuous row.
@@ -23,15 +23,22 @@ import { useState, useEffect } from "react";
  * Copyright and version are fetched from the business_details master file via API.
  * Trading name (item 1) is also fetched from business_details.trading_name.
  *
+ * Online status (item 10) uses combined detection:
+ * - navigator.onLine for instant network-loss detection
+ * - Backend ping every 30 seconds for server availability
+ * Shows "Offline" if either check fails.
+ *
  * REMINDER: Link remaining items to real active details in a future session.
  * Last updated: 2026-06-29
  */
 
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const PING_INTERVAL_MS = 30000; // Ping backend every 30 seconds
 
 function StatusBar() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [businessDetails, setBusinessDetails] = useState(null);
+  const isOnline = useOnlineStatus();
 
   // Update time every second
   useEffect(() => {
@@ -123,7 +130,7 @@ function StatusBar() {
           {/* 10. Priority 3: Online connection status — hidden below lg */}
           <Separator className="hidden lg:inline" />
           <span className="hidden lg:inline">
-            <ConnectionStatus online={true} />
+            <ConnectionStatus online={isOnline} />
           </span>
 
           {/* 11. Priority 1: Screen reference code — hidden below xl */}
@@ -137,6 +144,58 @@ function StatusBar() {
       </div>
     </footer>
   );
+}
+
+/**
+ * Custom hook: Combined online status detection.
+ * - Uses navigator.onLine for instant network-loss detection
+ * - Pings the backend every 30 seconds for server availability
+ * - Returns false (offline) if either check fails
+ */
+function useOnlineStatus() {
+  const [browserOnline, setBrowserOnline] = useState(
+    typeof navigator !== "undefined" ? navigator.onLine : true
+  );
+  const [backendReachable, setBackendReachable] = useState(true);
+
+  // Listen to browser online/offline events
+  useEffect(() => {
+    function handleOnline() {
+      setBrowserOnline(true);
+    }
+    function handleOffline() {
+      setBrowserOnline(false);
+    }
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  // Ping backend periodically
+  const pingBackend = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE}/business-details/`, {
+        method: "HEAD",
+        cache: "no-store",
+      });
+      setBackendReachable(response.ok);
+    } catch {
+      setBackendReachable(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial ping
+    pingBackend();
+    // Ping every 30 seconds
+    const interval = setInterval(pingBackend, PING_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [pingBackend]);
+
+  return browserOnline && backendReachable;
 }
 
 /**
