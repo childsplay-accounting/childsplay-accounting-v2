@@ -152,6 +152,18 @@
 
 ## REMINDERS (Check in Next Sessions)
 
+### Version Bumping (Remind Kiro at End of Each Session)
+- The application version is stored in the `business_details` master file (`current_version` field)
+- The Status Bar displays this version dynamically from the API
+- **At the end of each session where notable work was done, remind Kiro to bump the version**
+- Kiro will update the `current_version` field in the seed file and database
+
+**Semantic Versioning explained:**
+- Format: `v major.minor.patch` (e.g. `v0.1.0`)
+- **Patch** (0.1.0 → 0.1.**1**): Small bug fixes
+- **Minor** (0.1.0 → 0.**2**.0): New features added (like adding a new database table or module)
+- **Major** (0.1.0 → **1**.0.0): Big milestone or breaking change (e.g. the app goes live to real users)
+
 ### Implement Admin Housekeeping for Business Details Master File
 - The `business_details` table has a single record with all Childsplay Accounting business information
 - Currently seeded with default values and accessible via `GET /business-details` and `PUT /business-details`
