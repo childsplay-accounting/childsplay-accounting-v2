@@ -21,6 +21,7 @@ import { useState, useEffect } from "react";
  * None of the items are clickable except the Notification Bell.
  * All items use the same text colour (baby-100) for readability.
  * Copyright and version are fetched from the business_details master file via API.
+ * Trading name (item 1) is also fetched from business_details.trading_name.
  *
  * REMINDER: Link remaining items to real active details in a future session.
  * Last updated: 2026-06-29
@@ -68,6 +69,7 @@ function StatusBar() {
   const currentYear = currentTime.getFullYear();
 
   // Use business details from API if available, otherwise fall back to defaults
+  const tradingName = businessDetails?.trading_name || "Childsplay Accounting";
   const appVersion = businessDetails?.current_version || "v0.1.0";
   const copyrightText =
     businessDetails?.copyright ||
@@ -78,8 +80,8 @@ function StatusBar() {
       <div className="flex items-center justify-between h-6 px-2 text-[10px] whitespace-nowrap">
         {/* Left-aligned group: items 1–6 */}
         <div className="flex items-center gap-2">
-          {/* 1. Always visible: Application name */}
-          <span className="text-baby-100">Childsplay Accounting</span>
+          {/* 1. Always visible: Application name (from business details trading_name) */}
+          <span className="text-baby-100">{tradingName}</span>
 
           {/* 2. Priority 2: Application version — hidden below lg */}
           <Separator className="hidden lg:inline" />
