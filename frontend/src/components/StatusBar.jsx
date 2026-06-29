@@ -54,57 +54,62 @@ function StatusBar() {
 
   return (
     <footer className="w-full bg-baby-800 border-t border-baby-700 select-none overflow-hidden">
-      <div className="flex items-center h-6 px-2 text-[10px] gap-2 whitespace-nowrap">
-        {/* 1. Always visible: Application name */}
-        <span className="text-baby-100">Childsplay Accounting</span>
+      <div className="flex items-center justify-between h-6 px-2 text-[10px] whitespace-nowrap">
+        {/* Left-aligned group: items 1–6 */}
+        <div className="flex items-center gap-2">
+          {/* 1. Always visible: Application name */}
+          <span className="text-baby-100">Childsplay Accounting</span>
 
-        {/* 2. Priority 2: Application version — hidden below lg */}
-        <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100">v0.1.0</span>
+          {/* 2. Priority 2: Application version — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline text-baby-100">v0.1.0</span>
 
-        {/* 3. Priority 9: Current module name — hidden below sm */}
-        <Separator className="hidden sm:inline" />
-        <span className="hidden sm:inline text-baby-100">Client Information</span>
+          {/* 3. Priority 9: Current module name — hidden below sm */}
+          <Separator className="hidden sm:inline" />
+          <span className="hidden sm:inline text-baby-100">Client Information</span>
 
-        {/* 4. Priority 8: Current client code — hidden below md */}
-        <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-100">Client Code</span>
+          {/* 4. Priority 8: Current client code — hidden below md */}
+          <Separator className="hidden md:inline" />
+          <span className="hidden md:inline text-baby-100">Client Code</span>
 
-        {/* 5. Priority 7: Logged-in user name — hidden below md */}
-        <Separator className="hidden md:inline" />
-        <span className="hidden md:inline text-baby-100">User</span>
+          {/* 5. Priority 7: Logged-in user name — hidden below md */}
+          <Separator className="hidden md:inline" />
+          <span className="hidden md:inline text-baby-100">User</span>
 
-        {/* 6. Priority 6: Current firm name — hidden below lg */}
-        <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100">Sun Jomar Accountants</span>
+          {/* 6. Priority 6: Current firm name — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline text-baby-100">Sun Jomar Accountants</span>
+        </div>
 
-        {/* 7. Priority 4: Current date — hidden below lg */}
-        <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100">{formattedDate}</span>
+        {/* Right-aligned group: items 7–12 */}
+        <div className="flex items-center gap-2">
+          {/* 7. Priority 4: Current date — hidden below lg */}
+          <span className="hidden lg:inline text-baby-100">{formattedDate}</span>
 
-        {/* 8. Priority 5: Current time — hidden below lg */}
-        <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline text-baby-100">{formattedTime}</span>
+          {/* 8. Priority 5: Current time — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline text-baby-100">{formattedTime}</span>
 
-        {/* 9. Always visible: Copyright (year derived from current date) */}
-        <Separator />
-        <span className="text-baby-100">
-          © Comparative Shopping CC {currentYear} All Rights Reserved
-        </span>
+          {/* 9. Always visible: Copyright (year derived from current date) */}
+          <Separator />
+          <span className="text-baby-100">
+            © Comparative Shopping CC {currentYear} All Rights Reserved
+          </span>
 
-        {/* 10. Priority 3: Online connection status — hidden below lg */}
-        <Separator className="hidden lg:inline" />
-        <span className="hidden lg:inline">
-          <ConnectionStatus online={true} />
-        </span>
+          {/* 10. Priority 3: Online connection status — hidden below lg */}
+          <Separator className="hidden lg:inline" />
+          <span className="hidden lg:inline">
+            <ConnectionStatus online={true} />
+          </span>
 
-        {/* 11. Priority 1: Screen reference code — hidden below xl */}
-        <Separator className="hidden xl:inline" />
-        <span className="hidden xl:inline text-baby-100">Screen reference code</span>
+          {/* 11. Priority 1: Screen reference code — hidden below xl */}
+          <Separator className="hidden xl:inline" />
+          <span className="hidden xl:inline text-baby-100">Screen reference code</span>
 
-        {/* 12. Always visible: Notification bell */}
-        <Separator />
-        <NotificationBell count={0} />
+          {/* 12. Always visible: Notification bell */}
+          <Separator />
+          <NotificationBell count={0} />
+        </div>
       </div>
     </footer>
   );
