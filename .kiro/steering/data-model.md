@@ -244,8 +244,8 @@ Single-record master file for the Childsplay Accounting business itself. Only on
 
 ### address_type
 - Business Address
-- Home Address
 - Registered Address
+- Residential Address
 
 ### phone_type
 - Business Phone

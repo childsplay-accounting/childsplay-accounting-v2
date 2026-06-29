@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { clientsApi } from "../../services/api";
 import { PageTabs, PageButtons } from "./PageNavigation";
+import PageStatusWarning from "./PageStatusWarning";
 import PageStructural from "./pages/PageStructural";
 import PageID from "./pages/PageID";
 import PageContacts from "./pages/PageContacts";
 import PageTaxes from "./pages/PageTaxes";
 import PageMarital from "./pages/PageMarital";
 import PageConnected from "./pages/PageConnected";
+import { getPageWarnings } from "../../utils/validation";
 
 
 /**
@@ -65,6 +67,9 @@ function ClientFormWizard({ mode, clientId }) {
 
   const isEditing = mode === "edit";
   const isGateComplete = formData.preferred_language !== "" && formData.entity_type !== "";
+
+  // Compute page-level warnings (soft/delayed validation)
+  const pageWarnings = getPageWarnings(formData);
 
 
   // Load existing client data in edit mode
@@ -255,7 +260,10 @@ function ClientFormWizard({ mode, clientId }) {
         </div>
 
         {/* Page content */}
-        <div className="px-6 py-4">{renderPage()}</div>
+        <div className="px-6 py-4">
+          <PageStatusWarning warnings={pageWarnings[activePage]} />
+          {renderPage()}
+        </div>
 
         {/* Bottom navigation + Save */}
         <div className="px-6 pb-4">

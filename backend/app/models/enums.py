@@ -59,8 +59,8 @@ class IndividualTitle(str, enum.Enum):
 
 class AddressType(str, enum.Enum):
     BUSINESS_ADDRESS = "Business Address"
-    HOME_ADDRESS = "Home Address"
     REGISTERED_ADDRESS = "Registered Address"
+    RESIDENTIAL_ADDRESS = "Residential Address"
 
 
 class PhoneType(str, enum.Enum):

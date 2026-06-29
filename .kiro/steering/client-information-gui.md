@@ -245,8 +245,46 @@ Permanently Deleted (data removed from database)
 - **Page 5 (Marital Status & Dates)**: Entire page only visible/applicable when Entity Type starts with "Individual"
 - **Spouse details**: Only required/shown when Marital Status starts with "Married"
 
+### Client ID Type Conditionals
+- **"Identification Document"** and **"Passport"**: Only valid for Individual entity types. Non-individuals must use "Registration Number".
+- **"Passport"**: Only valid if the individual resides outside South Africa (Residential Address with Country ≠ "South Africa").
+- This is a **soft/delayed validation** — checked when both fields are filled or form is submitted. Error shown while the problem persists.
+
 ### VAT Conditionals
 - **VAT Registration** and **VAT Period**: Only visible when Tax Type = "Value Added Tax (VAT)"
+
+---
+
+## Page Status Warnings
+
+Each page displays a status warning area at the top showing:
+1. **Errors** (red ink — bg-red-50, text-red-700): Validation errors that must be resolved
+2. **Informational warnings** (subtle amber — bg-amber-50, text-amber-600): File type notices, etc.
+
+### Always-visible warnings:
+- When Client File Type is "New": info that file is a draft
+- When Client File Type is "Third Party": info that file is a reference contact
+- When Client File Type is "Archived": info that file is disabled/hidden
+
+### Validation errors shown per page:
+- **Page 2**: Client ID Type mismatch with Entity Type or address country
+- **Page 2**: SA ID number Luhn check failure (13 digits, check digit)
+- **Page 4**: SARS tax reference number Luhn check failure (10 digits, check digit)
+
+---
+
+## Number Validation (Luhn Algorithm)
+
+### SA Identity Number (13 digits)
+- Digits 1-6: Date of birth (YYMMDD)
+- Digits 7-10: Gender (0000-4999 female, 5000-9999 male)
+- Digit 11: Citizenship (0 = SA citizen, 1 = permanent resident)
+- Digit 13: Check digit (Luhn algorithm)
+
+### SARS Tax Reference Number (10 digits)
+- Digit 1: Tax type indicator (0 = Income Tax, 4 = VAT, 7 = PAYE)
+- Digits 2-9: Unique taxpayer identifier
+- Digit 10: Check digit (Luhn algorithm)
 
 ---
 

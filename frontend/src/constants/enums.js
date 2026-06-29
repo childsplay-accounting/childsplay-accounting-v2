@@ -44,7 +44,7 @@ export const ENUMS = {
   individualTitle: ["Dr", "Hon", "Mr", "Mrs", "Ms", "Prof", "Rev", "St"],
 
 
-  addressType: ["Business Address", "Home Address", "Registered Address"],
+  addressType: ["Business Address", "Registered Address", "Residential Address"],
 
   phoneType: ["Business Phone", "Home Phone", "Mobile Phone"],
 
