@@ -21,6 +21,43 @@ The Client Information Database is the first module of Childsplay Accounting. It
 | firm_name | VARCHAR(255) | |
 | created_at | TIMESTAMP | Auto-set |
 
+### business_details
+Single-record master file for the Childsplay Accounting business itself. Only one row exists in this table. The `copyright` field is computed dynamically at runtime (year from current date). Structural changes to client-related address/contact fields may result in corresponding changes here.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| id | UUID (PK) | Fixed: 00000000-0000-0000-0000-000000000002 |
+| developer_code | VARCHAR(2) | Always exactly 2 characters |
+| registered_name | VARCHAR(255) | |
+| registration_number | VARCHAR(50) | |
+| trading_name | VARCHAR(255) | |
+| basic_domain_coza | VARCHAR(255) | Nullable |
+| parked_domain_com | VARCHAR(255) | Nullable |
+| parked_domain_info | VARCHAR(255) | Nullable |
+| parked_domain_biz | VARCHAR(255) | Nullable |
+| email_contact_us | VARCHAR(255) | Nullable |
+| telephone_office | VARCHAR(20) | Nullable |
+| address_complex_unit_number | VARCHAR(20) | Nullable |
+| address_complex_name | VARCHAR(255) | Nullable |
+| address_street_number | VARCHAR(20) | Nullable |
+| address_street_name | VARCHAR(255) | Nullable |
+| address_suburb | VARCHAR(255) | Nullable |
+| address_town | VARCHAR(255) | Nullable |
+| address_postal_code | VARCHAR(10) | Nullable |
+| address_province | VARCHAR(100) | Nullable |
+| address_country | VARCHAR(100) | Default "South Africa" |
+| bank_account_name | VARCHAR(255) | Nullable |
+| bank_account_number | VARCHAR(50) | Nullable |
+| bank_account_type | VARCHAR(50) | Nullable |
+| bank_institution | VARCHAR(255) | Nullable |
+| bank_branch | VARCHAR(255) | Nullable |
+| bank_branch_code | VARCHAR(20) | Nullable |
+| member_full_names_and_surname | VARCHAR(255) | Nullable |
+| member_identification_number | VARCHAR(50) | Nullable |
+| copyright_template | VARCHAR(500) | Template with {registered_name} and {year} placeholders; year computed at runtime |
+| created_at | TIMESTAMP | Auto-set |
+| updated_at | TIMESTAMP | Auto-updated |
+
 ### client_groups
 | Field | Type | Notes |
 |-------|------|-------|

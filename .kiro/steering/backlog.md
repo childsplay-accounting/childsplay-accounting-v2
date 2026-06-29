@@ -152,6 +152,13 @@
 
 ## REMINDERS (Check in Next Sessions)
 
+### Implement Admin Housekeeping for Business Details Master File
+- The `business_details` table has a single record with all Childsplay Accounting business information
+- Currently seeded with default values and accessible via `GET /business-details` and `PUT /business-details`
+- **TODO:** Build an administrative GUI (housekeeping function) to allow editing this single record directly from the frontend
+- This should be a simple form (no wizard needed — single record, no repeating panels)
+- Once built, the Status Bar copyright and other application-wide references will pull from this record
+
 ### Populate Third Party / Firm / Group Dropdowns
 The following dropdowns currently show empty and need API endpoints + frontend wiring:
 - Third Party Contact Person Code → list Third Party clients filtered by group + firm

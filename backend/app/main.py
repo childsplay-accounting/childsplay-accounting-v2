@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine, Base
 from app.models import *  # noqa: F401, F403 — registers all models
-from app.routes import clients_router, health_router
+from app.routes import clients_router, health_router, business_details_router
 
 
 @asynccontextmanager
@@ -21,13 +21,14 @@ async def lifespan(app: FastAPI):
     """
     Base.metadata.create_all(bind=engine)
 
-    # Seed default firm (safe to run multiple times — skips if already exists)
-    from app.seed import seed_default_firm
+    # Seed default firm and business details (safe to run multiple times — skips if already exists)
+    from app.seed import seed_default_firm, seed_business_details
     from app.database import SessionLocal
 
     db = SessionLocal()
     try:
         seed_default_firm(db)
+        seed_business_details(db)
     finally:
         db.close()
 
@@ -53,6 +54,7 @@ app.add_middleware(
 # Register routes
 app.include_router(health_router)
 app.include_router(clients_router)
+app.include_router(business_details_router)
 
 
 @app.get("/")
