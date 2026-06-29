@@ -20,14 +20,17 @@ import { useState, useEffect } from "react";
  * All items flow in a single row with consistent spacing (no gaps, no spacers).
  * None of the items are clickable except the Notification Bell.
  * All items use the same text colour (baby-100) for readability.
- * Copyright year is derived dynamically from the current date.
+ * Copyright and version are fetched from the business_details master file via API.
  *
- * REMINDER: Link these to real active details in a future session.
- * Last updated: 2026-06-28
+ * REMINDER: Link remaining items to real active details in a future session.
+ * Last updated: 2026-06-29
  */
+
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function StatusBar() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [businessDetails, setBusinessDetails] = useState(null);
 
   // Update time every second
   useEffect(() => {
@@ -35,6 +38,18 @@ function StatusBar() {
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Fetch business details from master file (once on mount)
+  useEffect(() => {
+    fetch(`${API_BASE}/business-details/`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data) setBusinessDetails(data);
+      })
+      .catch(() => {
+        // Silently fall back to defaults if API unavailable
+      });
   }, []);
 
   const formattedDate = currentTime.toLocaleDateString("en-ZA", {
@@ -52,6 +67,12 @@ function StatusBar() {
 
   const currentYear = currentTime.getFullYear();
 
+  // Use business details from API if available, otherwise fall back to defaults
+  const appVersion = businessDetails?.current_version || "v0.1.0";
+  const copyrightText =
+    businessDetails?.copyright ||
+    `© Comparative Shopping CC ${currentYear} All Rights Reserved`;
+
   return (
     <footer className="w-full bg-baby-800 border-t border-baby-700 select-none overflow-hidden">
       <div className="flex items-center justify-between h-6 px-2 text-[10px] whitespace-nowrap">
@@ -62,7 +83,7 @@ function StatusBar() {
 
           {/* 2. Priority 2: Application version — hidden below lg */}
           <Separator className="hidden lg:inline" />
-          <span className="hidden lg:inline text-baby-100">v0.1.0</span>
+          <span className="hidden lg:inline text-baby-100">{appVersion}</span>
 
           {/* 3. Priority 9: Current module name — hidden below sm */}
           <Separator className="hidden sm:inline" />
@@ -91,10 +112,10 @@ function StatusBar() {
           <Separator className="hidden lg:inline" />
           <span className="hidden lg:inline text-baby-100">{formattedTime}</span>
 
-          {/* 9. Always visible: Copyright (year derived from current date) */}
+          {/* 9. Always visible: Copyright (from business details master file) */}
           <Separator />
           <span className="text-baby-100">
-            © Comparative Shopping CC {currentYear} All Rights Reserved
+            {copyrightText}
           </span>
 
           {/* 10. Priority 3: Online connection status — hidden below lg */}

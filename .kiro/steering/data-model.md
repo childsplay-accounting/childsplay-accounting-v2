@@ -55,6 +55,7 @@ Single-record master file for the Childsplay Accounting business itself. Only on
 | member_full_names_and_surname | VARCHAR(255) | Nullable |
 | member_identification_number | VARCHAR(50) | Nullable |
 | copyright_template | VARCHAR(500) | Template with {registered_name} and {year} placeholders; year computed at runtime |
+| current_version | VARCHAR(20) | Current application version (e.g. "v0.1.0") |
 | created_at | TIMESTAMP | Auto-set |
 | updated_at | TIMESTAMP | Auto-updated |
 

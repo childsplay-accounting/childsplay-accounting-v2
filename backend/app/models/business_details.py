@@ -70,6 +70,9 @@ class BusinessDetails(Base):
         nullable=False,
     )
 
+    # Current application version
+    current_version: Mapped[str] = mapped_column(String(20), default="v0.1.0", nullable=False)
+
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(

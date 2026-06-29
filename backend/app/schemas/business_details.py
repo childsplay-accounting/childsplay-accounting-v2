@@ -54,6 +54,9 @@ class BusinessDetailsBase(BaseModel):
     # Copyright template (stored with placeholders)
     copyright_template: str = "© {registered_name} {year} All Rights Reserved"
 
+    # Current application version
+    current_version: str = "v0.1.0"
+
 
 class BusinessDetailsUpdate(BaseModel):
     """Schema for updating the business details (all fields optional)."""
@@ -98,6 +101,9 @@ class BusinessDetailsUpdate(BaseModel):
 
     # Copyright template
     copyright_template: str | None = None
+
+    # Current application version
+    current_version: str | None = None
 
 
 class BusinessDetailsResponse(BusinessDetailsBase):

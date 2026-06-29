@@ -81,6 +81,7 @@ def seed_business_details(db: Session) -> None:
         member_full_names_and_surname="Johannes De Villiers de Kock",
         member_identification_number="7101295167083",
         copyright_template="\u00a9 {registered_name} {year} All Rights Reserved",
+        current_version="v0.1.0",
     )
     db.add(details)
     db.commit()
