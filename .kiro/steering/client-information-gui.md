@@ -284,12 +284,28 @@ Each page displays a status warning area at the top showing:
 
 ### SARS Tax Reference Number (10 digits)
 - Digit 1: Tax type indicator
-  - 0 = Income Tax (Individuals)
-  - 9 = Income Tax (Companies/Corporates/Trusts/non-individual entities)
+  - 0 = Income Tax (Individuals and Estates — entity types starting with "Individual" or "Estate")
+  - 9 = Income Tax (All other entity types: Companies, Close Corporations, Trusts, Partnerships, etc.)
   - 4 = Value Added Tax (VAT) — all entity types
   - 7 = Employees Tax (EMP/PAYE) — all entity types that are employers
 - Digits 2-9: Unique taxpayer identifier
 - Digit 10: Check digit (Luhn algorithm)
+
+### Tax Number Validations Still To Be Implemented (REMINDER)
+The following tax types need their reference number format and validation rules researched and implemented:
+- Diesel Rebate (DR)
+- Dividend Withholding Tax (DWT)
+- Donations Tax (DT)
+- Employment Equity (EE)
+- Employment Tax Incentive (ETI)
+- Estate Duty (ED)
+- Public Benefit Organisation (PBO)
+- Securities Transfer Tax (STT)
+- Skills Development Levies (SDL)
+- Transfer Duty (TD)
+- Turnover Tax
+- Unemployment Insurance Fund Contributions (UIF)
+- Workmen's Compensation Fund Contributions (WCF)
 
 ---
 

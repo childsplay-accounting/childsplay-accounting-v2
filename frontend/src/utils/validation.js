@@ -77,8 +77,8 @@ export function validateSAIdNumber(idNumber) {
  * Validate a SARS tax reference number (10 digits, Luhn check on last digit).
  *
  * First digit indicates tax type:
- * - 0 = Income Tax (Individuals)
- * - 9 = Income Tax (Companies/Corporates/Trusts/other non-individual entities)
+ * - 0 = Income Tax (Individuals and Estates)
+ * - 9 = Income Tax (Companies/Corporates/Trusts/Partnerships/all other non-individual entities)
  * - 4 = Value Added Tax (VAT) — all entity types
  * - 7 = Employees Tax (EMP/PAYE) — all entity types that are employers
  *
@@ -102,14 +102,18 @@ export function validateSATaxNumber(taxNumber, taxType, entityType) {
 
   // Check first digit matches tax type and entity type
   const firstDigit = taxNumber[0];
-  const isIndividual = (entityType || "").startsWith("Individual");
+  // "Individual" and "Estate" entity types use first digit "0" for Income Tax
+  // All other entity types (companies, trusts, partnerships, etc.) use "9"
+  const isIndividualOrEstate =
+    (entityType || "").startsWith("Individual") ||
+    (entityType || "").startsWith("Estate");
 
   if (taxType === "Income Tax (IT)") {
-    if (isIndividual && firstDigit !== "0") {
+    if (isIndividualOrEstate && firstDigit !== "0") {
       errors.push(
-        `Income Tax reference for individuals should start with "0" but starts with "${firstDigit}".`
+        `Income Tax reference for individuals/estates should start with "0" but starts with "${firstDigit}".`
       );
-    } else if (!isIndividual && firstDigit !== "9") {
+    } else if (!isIndividualOrEstate && firstDigit !== "9") {
       errors.push(
         `Income Tax reference for corporate/non-individual entities should start with "9" but starts with "${firstDigit}".`
       );
