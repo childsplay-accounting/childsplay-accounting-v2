@@ -265,7 +265,7 @@ Single-record master file for the Childsplay Accounting business itself. Only on
 - Securities Transfer Tax (STT)
 - Skills Development Levies (SDL)
 - Transfer Duty (TD)
-- Turnover Tax
+- Turnover Tax (TT)
 - Unemployment Insurance Fund Contributions (UIF)
 - Value Added Tax (VAT)
 - Workmen's Compensation Fund Contributions (WCF)

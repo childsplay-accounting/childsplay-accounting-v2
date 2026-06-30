@@ -25,9 +25,6 @@ function PageStructural({ formData, onChange, disabled, isGateComplete, isEditin
     <div className="space-y-6">
       {/* Gating Fields Section */}
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-        <h3 className="text-sm font-semibold text-amber-800 mb-3">
-          Required First — Select both to unlock all fields
-        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <SelectField
             label="Preferred Communication - Language"

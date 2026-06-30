@@ -82,7 +82,7 @@ class TaxType(str, enum.Enum):
     SECURITIES_TRANSFER_TAX = "Securities Transfer Tax (STT)"
     SKILLS_DEVELOPMENT_LEVIES = "Skills Development Levies (SDL)"
     TRANSFER_DUTY = "Transfer Duty (TD)"
-    TURNOVER_TAX = "Turnover Tax"
+    TURNOVER_TAX = "Turnover Tax (TT)"
     UIF = "Unemployment Insurance Fund Contributions (UIF)"
     VAT = "Value Added Tax (VAT)"
     WORKMENS_COMPENSATION = "Workmen's Compensation Fund Contributions (WCF)"

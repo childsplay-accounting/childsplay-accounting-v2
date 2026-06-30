@@ -74,19 +74,32 @@ export function validateSAIdNumber(idNumber) {
 }
 
 /**
- * Validate a SARS tax reference number (10 digits, Luhn check on last digit).
+ * Validate a SARS tax reference number.
  *
- * First digit indicates tax type:
- * - 0 = Income Tax (Individuals and Estates)
- * - 9 = Income Tax (Companies/Corporates/Trusts/Partnerships/all other non-individual entities)
+ * Format rules:
+ * - Most tax numbers are 10 digits with Luhn check on last digit
+ * - SDL numbers: "L" + 9 digits (same as EMP but first char is "L" instead of "7")
+ * - UIF calculated number: "U" + 9 digits (derived from EMP, not user-entered)
+ *
+ * First digit indicates tax type for numeric-only numbers:
+ * - 0 = Income Tax — Individuals and Estates
+ * - 9 = Income Tax — Companies/Corporates/Trusts/Partnerships/all other entities
  * - 4 = Value Added Tax (VAT) — all entity types
- * - 7 = Employees Tax (EMP/PAYE) — all entity types that are employers
+ * - 7 = Employees Tax (EMP/PAYE) — all entity types
  *
- * The Luhn algorithm applies to ALL SARS tax reference numbers.
+ * Cross-reference rules (same number as counterpart):
+ * - Diesel Rebate (DR) = same as VAT number (starts with "4")
+ * - Dividend Withholding Tax (DWT) = same as corporate Income Tax (starts with "9")
+ * - Donations Tax (DT) = same as Income Tax (IT) (starts with "0" or "9" per entity)
+ * - Employment Tax Incentive (ETI) = same as Employees Tax (starts with "7")
+ * - Estate Duty (ED) = same as individual Income Tax (starts with "0")
+ * - Securities Transfer Tax (STT) = same as corporate Income Tax (starts with "9")
+ * - Turnover Tax (TT) = same as Income Tax (IT) (starts with "0" or "9" per entity)
+ * - Skills Development Levies (SDL) = same as EMP but starts with "L" instead of "7"
  *
- * @param {string} taxNumber - The 10-digit tax reference number
- * @param {string} taxType - The type of tax (e.g., "Income Tax (IT)", "Value Added Tax (VAT)")
- * @param {string} entityType - The entity type of the client (to determine individual vs corporate)
+ * @param {string} taxNumber - The tax reference number
+ * @param {string} taxType - The type of tax
+ * @param {string} entityType - The entity type of the client
  * @returns {{ valid: boolean, errors: string[] }}
  */
 export function validateSATaxNumber(taxNumber, taxType, entityType) {
@@ -94,50 +107,124 @@ export function validateSATaxNumber(taxNumber, taxType, entityType) {
 
   if (!taxNumber) return { valid: true, errors }; // Empty is OK
 
-  // Must be exactly 10 digits
+  const isIndividualOrEstate =
+    (entityType || "").startsWith("Individual") ||
+    (entityType || "").startsWith("Estate");
+
+  // SDL has special format: "L" + 9 digits
+  if (taxType === "Skills Development Levies (SDL)") {
+    if (!/^L\d{9}$/.test(taxNumber)) {
+      errors.push('SDL reference number must be "L" followed by 9 digits (e.g., L123456789).');
+      return { valid: false, errors };
+    }
+    // Luhn check on the 9 numeric digits + the check digit concept
+    const numericPart = taxNumber.substring(1);
+    if (!luhnCheck(numericPart)) {
+      errors.push("SDL reference number failed the check digit validation (Luhn algorithm on digits after L).");
+    }
+    return { valid: errors.length === 0, errors };
+  }
+
+  // All other tax numbers: must be exactly 10 digits
   if (!/^\d{10}$/.test(taxNumber)) {
     errors.push("SARS tax reference number must be exactly 10 digits.");
     return { valid: false, errors };
   }
 
-  // Check first digit matches tax type and entity type
   const firstDigit = taxNumber[0];
-  // "Individual" and "Estate" entity types use first digit "0" for Income Tax
-  // All other entity types (companies, trusts, partnerships, etc.) use "9"
-  const isIndividualOrEstate =
-    (entityType || "").startsWith("Individual") ||
-    (entityType || "").startsWith("Estate");
 
-  if (taxType === "Income Tax (IT)") {
-    if (isIndividualOrEstate && firstDigit !== "0") {
-      errors.push(
-        `Income Tax reference for individuals/estates should start with "0" but starts with "${firstDigit}".`
-      );
-    } else if (!isIndividualOrEstate && firstDigit !== "9") {
-      errors.push(
-        `Income Tax reference for corporate/non-individual entities should start with "9" but starts with "${firstDigit}".`
-      );
-    }
-  } else if (taxType === "Value Added Tax (VAT)") {
-    if (firstDigit !== "4") {
-      errors.push(
-        `VAT reference number should start with "4" but starts with "${firstDigit}".`
-      );
-    }
-  } else if (taxType === "Employees Tax (EMP)") {
-    if (firstDigit !== "7") {
-      errors.push(
-        `Employees Tax (PAYE) reference number should start with "7" but starts with "${firstDigit}".`
-      );
-    }
+  // Determine expected first digit based on tax type
+  switch (taxType) {
+    case "Income Tax (IT)":
+    case "Donations Tax (DT)":
+    case "Turnover Tax (TT)":
+      // These follow Income Tax rules: 0 for individuals/estates, 9 for corporates
+      if (isIndividualOrEstate && firstDigit !== "0") {
+        errors.push(
+          `${taxType} reference for individuals/estates should start with "0" but starts with "${firstDigit}".`
+        );
+      } else if (!isIndividualOrEstate && firstDigit !== "9") {
+        errors.push(
+          `${taxType} reference for corporate/non-individual entities should start with "9" but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    case "Estate Duty (ED)":
+      // Always individual Income Tax format (starts with "0")
+      if (firstDigit !== "0") {
+        errors.push(
+          `Estate Duty reference should start with "0" (individual Income Tax format) but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    case "Dividend Withholding Tax (DWT)":
+    case "Securities Transfer Tax (STT)":
+      // Always corporate Income Tax format (starts with "9")
+      if (firstDigit !== "9") {
+        errors.push(
+          `${taxType} reference should start with "9" (corporate Income Tax format) but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    case "Value Added Tax (VAT)":
+    case "Diesel Rebate (DR)":
+      // VAT format (starts with "4")
+      if (firstDigit !== "4") {
+        errors.push(
+          `${taxType} reference number should start with "4" but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    case "Employees Tax (EMP)":
+    case "Employment Tax Incentive (ETI)":
+      // EMP/PAYE format (starts with "7")
+      if (firstDigit !== "7") {
+        errors.push(
+          `${taxType} reference number should start with "7" but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    case "Unemployment Insurance Fund Contributions (UIF)":
+      // UIF uses same format as EMP (starts with "7")
+      if (firstDigit !== "7") {
+        errors.push(
+          `UIF reference number should start with "7" (same as Employees Tax) but starts with "${firstDigit}".`
+        );
+      }
+      break;
+
+    // Other tax types not yet validated for first digit:
+    // Employment Equity (EE), Public Benefit Organisation (PBO),
+    // Transfer Duty (TD), Workmen's Compensation Fund (WCF)
+    default:
+      break;
   }
 
-  // Luhn check digit (last digit)
+  // Luhn check digit (last digit) — applies to all 10-digit tax numbers
   if (!luhnCheck(taxNumber)) {
     errors.push("Tax reference number failed the check digit validation (Luhn algorithm).");
   }
 
   return { valid: errors.length === 0, errors };
+}
+
+/**
+ * Calculate the UIF derived number from an Employees Tax (EMP) number.
+ * UIF calculated = EMP number with first digit "7" replaced by "U".
+ *
+ * This is NOT user-entered — it is auto-calculated when either UIF or EMP is filled.
+ *
+ * @param {string} empNumber - The 10-digit EMP reference number (starts with "7")
+ * @returns {string|null} - The calculated UIF number (e.g., "U234567890") or null
+ */
+export function calculateUIFDerivedNumber(empNumber) {
+  if (!empNumber || !/^7\d{9}$/.test(empNumber)) return null;
+  return "U" + empNumber.substring(1);
 }
 
 /**
@@ -191,6 +278,38 @@ export function validateClientIdType(formData) {
 }
 
 /**
+ * Get the file type status warning/success message.
+ * @param {string} fileType
+ * @returns {{ type: string, message: string } | null}
+ */
+function getFileTypeWarning(fileType) {
+  switch (fileType) {
+    case "New":
+      return {
+        type: "info",
+        message: 'Client File Type is "New" — this file is a draft and not yet active.',
+      };
+    case "Third Party":
+      return {
+        type: "info",
+        message: 'Client File Type is "Third Party" — this file serves as a reference contact only.',
+      };
+    case "Archived":
+      return {
+        type: "info",
+        message: 'Client File Type is "Archived" — this file is disabled and hidden from normal views.',
+      };
+    case "Active":
+      return {
+        type: "success",
+        message: 'Client File Type is "Active" — this client file is live and operational.',
+      };
+    default:
+      return null;
+  }
+}
+
+/**
  * Generate all page-level warnings and errors for the form.
  *
  * Returns an object keyed by page index (0-5) with arrays of
@@ -207,28 +326,13 @@ export function validateClientIdType(formData) {
 export function getPageWarnings(formData) {
   const warnings = { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [] };
 
-  // --- File Type status (Page 1) ---
+  // --- File Type status (shown on ALL pages) ---
   const fileType = formData.client_file_type || "";
-  if (fileType === "New") {
-    warnings[0].push({
-      type: "info",
-      message: 'Client File Type is "New" — this file is a draft and not yet active.',
-    });
-  } else if (fileType === "Third Party") {
-    warnings[0].push({
-      type: "info",
-      message: 'Client File Type is "Third Party" — this file serves as a reference contact only.',
-    });
-  } else if (fileType === "Archived") {
-    warnings[0].push({
-      type: "info",
-      message: 'Client File Type is "Archived" — this file is disabled and hidden from normal views.',
-    });
-  } else if (fileType === "Active") {
-    warnings[0].push({
-      type: "success",
-      message: 'Client File Type is "Active" — this client file is live and operational.',
-    });
+  const fileTypeWarning = getFileTypeWarning(fileType);
+  if (fileTypeWarning) {
+    for (let i = 0; i <= 5; i++) {
+      warnings[i].push(fileTypeWarning);
+    }
   }
 
   // --- Page 2: Client ID Type validation ---
@@ -257,6 +361,25 @@ export function getPageWarnings(formData) {
         for (const err of errors) {
           warnings[3].push({ type: "error", message: err });
         }
+      }
+    }
+
+    // --- UIF calculated number: if EMP or UIF is filled, validate the derived UIF number ---
+    const empRegistration = formData.tax_registrations.find(
+      (t) => t.tax_type === "Employees Tax (EMP)" && t.tax_number
+    );
+    const uifRegistration = formData.tax_registrations.find(
+      (t) => t.tax_type === "Unemployment Insurance Fund Contributions (UIF)" && t.tax_number
+    );
+
+    if (empRegistration || uifRegistration) {
+      const sourceNumber = empRegistration?.tax_number || uifRegistration?.tax_number;
+      const derivedUIF = calculateUIFDerivedNumber(sourceNumber);
+      if (derivedUIF) {
+        warnings[3].push({
+          type: "info",
+          message: `Calculated UIF number (derived from EMP): ${derivedUIF}`,
+        });
       }
     }
   }

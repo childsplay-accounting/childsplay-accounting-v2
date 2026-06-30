@@ -292,20 +292,22 @@ Each page displays a status warning area at the top showing:
 - Digit 10: Check digit (Luhn algorithm)
 
 ### Tax Number Validations Still To Be Implemented (REMINDER)
-The following tax types need their reference number format and validation rules researched and implemented:
-- Diesel Rebate (DR)
-- Dividend Withholding Tax (DWT)
-- Donations Tax (DT)
-- Employment Equity (EE)
-- Employment Tax Incentive (ETI)
-- Estate Duty (ED)
-- Public Benefit Organisation (PBO)
-- Securities Transfer Tax (STT)
-- Skills Development Levies (SDL)
-- Transfer Duty (TD)
-- Turnover Tax
-- Unemployment Insurance Fund Contributions (UIF)
-- Workmen's Compensation Fund Contributions (WCF)
+The following tax types still need their reference number format and validation rules researched:
+- Employment Equity (EE) — first digit unknown
+- Public Benefit Organisation (PBO) — first digit unknown
+- Transfer Duty (TD) — first digit unknown
+- Workmen's Compensation Fund Contributions (WCF) — first digit unknown
+
+### Tax Number Cross-Reference Rules (IMPLEMENTED)
+- Diesel Rebate (DR) = same as VAT number (starts with "4")
+- Dividend Withholding Tax (DWT) = same as corporate Income Tax (starts with "9")
+- Donations Tax (DT) = same as Income Tax (IT) (starts with "0" or "9" per entity type)
+- Employment Tax Incentive (ETI) = same as Employees Tax (starts with "7")
+- Estate Duty (ED) = same as individual Income Tax (starts with "0")
+- Securities Transfer Tax (STT) = same as corporate Income Tax (starts with "9")
+- Turnover Tax (TT) = same as Income Tax (IT) (starts with "0" or "9" per entity type)
+- Skills Development Levies (SDL) = same as EMP but starts with "L" instead of "7" (format: L + 9 digits)
+- UIF (calculated, not user-selectable) = EMP number with "7" replaced by "U" (shown as info on Page 4)
 
 ---
 
