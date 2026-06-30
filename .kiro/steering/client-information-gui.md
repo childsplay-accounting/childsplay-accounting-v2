@@ -382,6 +382,33 @@ The following dropdowns currently show empty options and need to be connected to
 
 ---
 
+## Computed / Combined Fields
+
+These fields are **calculated from existing data** — they do not take up storage space. They are displayed in the UI (read-only, copy-paste friendly) for user convenience.
+
+### Combined Name
+- **Individuals:** [Individual Title] [Initials from Full Names, no spaces] [Surname]
+  - If Non-Capitalization Surname is TRUE, the surname prefix(es) appear in lowercase
+  - Example: "Mr JC de Kock", "Prof AB van der Merwe", "Mrs L Mouton"
+  - Initials are the first letter of each word in the "Full Names" name entry
+- **All other entity types:** The "Registered Name" is the Combined Name
+
+### Combined Income Tax (IT) No
+- Only shown when Tax Type = "Income Tax (IT)"
+- Format: `XXXX/XXX/XX/X` (4/3/2/1 digits separated by slashes)
+- Followed by `P` if Tax Status = "Provisional"
+- Example: `0123/456/78/9` or `0123/456/78/9P`
+
+### Identification Document No (formatted)
+- Only shown when Client ID Type = "Identification Document"
+- Format: `XXXXXX XXXX XX X` (6, 4, 2, 1 digits separated by spaces)
+- Example: `850101 5001 08 3`
+
+### Future Combined Fields
+- Additional computed fields will be added as more cross-references are identified
+
+---
+
 ## General Development Note
 The Client Information module is the **core structural backbone** of the Childsplay Accounting application. It will undergo several iterative refinements including:
 - GUI layout adjustments

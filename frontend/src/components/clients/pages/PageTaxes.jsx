@@ -1,6 +1,7 @@
 import { TextField, SelectField } from "../FormField";
 import DynamicFieldGroup from "../DynamicFieldGroup";
 import { ENUMS } from "../../../constants/enums";
+import { getCombinedIncomeTaxNo } from "../../../utils/combinedFields";
 
 /**
  * Page 4: Segment Taxes & Income Sources
@@ -45,6 +46,10 @@ function PageTaxes({ formData, onArrayItemChange, onArrayAdd, onArrayRemove, dis
         disabled={disabled}
         renderItem={(item, index, isDisabled) => {
           const isVAT = item.tax_type === "Value Added Tax (VAT)";
+          const isIncomeTax = item.tax_type === "Income Tax (IT)";
+          const combinedITNo = isIncomeTax
+            ? getCombinedIncomeTaxNo({ taxNumber: item.tax_number, taxStatus: item.tax_status })
+            : "";
           return (
             <div className="space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -73,6 +78,18 @@ function PageTaxes({ formData, onArrayItemChange, onArrayAdd, onArrayRemove, dis
                   disabled={isDisabled}
                 />
               </div>
+
+              {/* Combined Income Tax No (computed) */}
+              {combinedITNo && (
+                <div className="p-2 bg-gray-50 border border-gray-200 rounded-lg">
+                  <span className="text-xs font-medium text-gray-500">
+                    Combined Income Tax (IT) No:{" "}
+                  </span>
+                  <span className="text-sm font-mono text-gray-800 select-text">
+                    {combinedITNo}
+                  </span>
+                </div>
+              )}
 
 
               {/* VAT-specific fields — only visible when Tax Type = VAT */}
