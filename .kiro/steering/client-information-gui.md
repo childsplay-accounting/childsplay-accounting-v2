@@ -6,7 +6,35 @@ The Client Information module provides three main user interfaces, accessible fr
 2. **Edit Existing Client** — Modify an existing client file (search/select → same form pre-populated)
 3. **Remove Terminated Client** — Disable (archive) a client file (search/select → confirmation)
 
-These GUIs are presented as **windows within the workpage area** (the body of the web app).
+These GUIs are presented as **windows within the workpage area** (the body of the web app), using a **3-panel layout**:
+
+```
+┌──────────────┬─────────────────────────────┬──────────────┐
+│  Left Panel  │      Center Panel           │  Right Panel │
+│  Client List │  (Client Info form/content) │  (Related)   │
+│  + Search    │                             │  (Future)    │
+└──────────────┴─────────────────────────────┴──────────────┘
+```
+
+### Left Panel — Client List
+- Lists all existing clients (two columns: Client Code + Combined Client Name)
+- Search bar at the top filters the list
+- Clicking a client selects it for the center panel (edit or archive)
+- Replaces the old separate "search and select" interface
+- Future: additional filters will be applied
+
+### Center Panel — Client Information Form
+- The 6-page wizard/tabbed form (Add New, Edit, or Archive confirmation)
+- When no client is selected (Edit/Remove): shows prompt to select from left panel
+- When Add New Client: shows blank form
+
+### Right Panel — Related (Future)
+- Reserved for future relational data tables per client:
+  - Tax Register
+  - Timesheets
+  - Comments
+  - Outstanding Documents and Information
+- Currently shows a placeholder
 
 ---
 

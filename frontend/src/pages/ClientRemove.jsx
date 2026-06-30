@@ -1,32 +1,40 @@
 import { useState } from "react";
-import ClientSearch from "../components/clients/ClientSearch";
+import ClientLayout from "../components/clients/ClientLayout";
 import ClientArchiveConfirm from "../components/clients/ClientArchiveConfirm";
 
 /**
  * Remove Terminated Client page.
- * Shows a search/select interface, then a confirmation dialog.
+ * 3-panel layout:
+ * - Left: Client list with search (select a client to archive)
+ * - Center: Archive confirmation dialog (once a client is selected)
+ * - Right: Related (future)
+ *
  * On confirm: sets client_file_type to "Archived".
  * No data is deleted — the record remains in the database.
  */
 function ClientRemove() {
   const [selectedClientId, setSelectedClientId] = useState(null);
 
-  if (!selectedClientId) {
-    return (
-      <ClientSearch
-        title="Remove Terminated Client"
-        subtitle="Search and select a client to archive"
-        onSelect={(clientId) => setSelectedClientId(clientId)}
-        excludeArchived={true}
-      />
-    );
-  }
-
   return (
-    <ClientArchiveConfirm
-      clientId={selectedClientId}
-      onCancel={() => setSelectedClientId(null)}
-    />
+    <ClientLayout
+      onSelectClient={(clientId) => setSelectedClientId(clientId)}
+      selectedClientId={selectedClientId}
+      excludeArchived={true}
+      mode="remove"
+    >
+      {selectedClientId ? (
+        <ClientArchiveConfirm
+          clientId={selectedClientId}
+          onCancel={() => setSelectedClientId(null)}
+        />
+      ) : (
+        <div className="h-full flex items-center justify-center">
+          <p className="text-gray-400 text-sm italic">
+            Select a client from the list to archive.
+          </p>
+        </div>
+      )}
+    </ClientLayout>
   );
 }
 
